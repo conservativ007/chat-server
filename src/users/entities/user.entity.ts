@@ -10,7 +10,7 @@ export class UserEntity {
   login: string;
 
   @Column()
-  // @Exclude()
+  @Exclude()
   password: string;
 
   @Column({ nullable: true })
@@ -21,6 +21,9 @@ export class UserEntity {
 
   @Column()
   online: boolean;
+
+  @Column({ nullable: true })
+  socketID: string;
 
   @Column({ type: 'bigint' })
   createdAt: number;
