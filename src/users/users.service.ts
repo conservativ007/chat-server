@@ -64,14 +64,6 @@ export class UsersService {
     await this.userRepository.save(foundUser);
   }
 
-  // create(createUserDto: CreateUserDto) {
-  //   return 'This action adds a new user';
-  // }
-
-  // findAll() {
-  //   return `This action returns all users`;
-  // }
-
   async getByLogin(
     login: string,
     password: string,
@@ -85,22 +77,12 @@ export class UsersService {
     });
 
     if (user === null) {
-      console.log('user not found');
       throw new HttpException('ivalid login or password', HttpStatus.NOT_FOUND);
     }
 
     user.socketID = socketID;
     user.online = true;
-    this.userRepository.save(user);
-
+    await this.userRepository.save(user);
     return user;
   }
-
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
 }

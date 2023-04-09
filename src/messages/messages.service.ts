@@ -19,7 +19,7 @@ export class MessagesService {
   }
 
   async findAllUsers() {
-    console.log('from service findAllUsers');
-    return await this.userRepository.find();
+    const users = await this.userRepository.find();
+    return users;
   }
 }
