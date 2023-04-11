@@ -42,8 +42,11 @@ export class UsersService {
     return await this.userRepository.save(newUser);
   }
 
-  getAll(): Promise<UserEntity[]> {
-    return this.userRepository.find();
+  async getAll(): Promise<UserEntity[]> {
+    const users = await this.userRepository.find();
+    console.log('from getAll() user service');
+    console.log(users);
+    return users;
   }
 
   async setStatusUserToOffline(socketID: string): Promise<void> {
@@ -83,6 +86,11 @@ export class UsersService {
     user.socketID = socketID;
     user.online = true;
     await this.userRepository.save(user);
+    return user;
+  }
+
+  async findOne(login: string) {
+    const user = await this.userRepository.findOneBy({ login });
     return user;
   }
 }

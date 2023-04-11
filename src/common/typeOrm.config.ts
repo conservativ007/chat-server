@@ -3,6 +3,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { MessageEntity } from 'src/messages/entities/message.entity';
+import { PrivateMessageEntity } from 'src/messages/entities/privateMessage.entity';
 
 // config();
 
@@ -23,7 +24,7 @@ export const newOrmConfig: DataSourceOptions = {
   // username: configService.get('POSTGRES_USER'),
   // password: configService.get('POSTGRES_PASSWORD'),
   // database: configService.get('POSTGRES_DB'),
-  entities: [MessageEntity, UserEntity],
+  entities: [MessageEntity, UserEntity, PrivateMessageEntity],
   synchronize: true,
 };
 

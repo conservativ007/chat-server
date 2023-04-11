@@ -6,7 +6,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class MessageEntity {
+export class PrivateMessageEntity {
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
@@ -18,6 +18,9 @@ export class MessageEntity {
 
   @Column()
   message: string;
+
+  @Column()
+  messageStatus: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

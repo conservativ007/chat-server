@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { APP_FILTER } from '@nestjs/core';
 import { CustomExceptionFilter } from './common/exceptions/CustomExceptionFilter';
+import { PrivateMessageEntity } from './messages/entities/privateMessage.entity';
 
 @Module({
   imports: [TypeOrmModule.forRoot(newOrmConfig), MessagesModule, UsersModule],

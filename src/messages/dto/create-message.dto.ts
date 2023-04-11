@@ -4,10 +4,19 @@ import { IsString } from 'class-validator';
 
 export class CreateMessageDto {
   @IsString()
-  login: string;
+  senderName: string;
 
   @IsString()
-  password: string;
+  receiverName: string;
+
+  @IsString()
+  message: string;
+
+  // @IsString()
+  // login: string;
+
+  // @IsString()
+  // text: string;
 }
 
 // import { Column, CreateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
