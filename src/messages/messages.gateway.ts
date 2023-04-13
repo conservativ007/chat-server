@@ -13,8 +13,8 @@ import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { CreatePrivateMessageDto } from './dto/create-private-message-dto';
-import { PrivateMessageEntity } from './entities/privateMessage.entity';
 import { IPrivateMessage } from 'src/common/types/interfaces';
+import { MessageEntity } from './entities/message.entity';
 
 @WebSocketGateway({
   cors: {
@@ -33,14 +33,14 @@ export class MessagesGateway
   ) {}
   private logger: Logger = new Logger('AppGateway');
 
-  @SubscribeMessage('createMessage')
+  @SubscribeMessage('createMessageForAllChat')
   async handleMessage(
     @MessageBody() createMessageDto: CreateMessageDto,
   ): Promise<void> {
-    console.log('server side payload');
-    console.log(createMessageDto);
+    // console.log('server side payload');
+    // console.log(createMessageDto);
     await this.messagesService.createMessage(createMessageDto);
-    this.server.emit('message', createMessageDto);
+    this.server.emit('messageForAllChat', createMessageDto);
   }
 
   @SubscribeMessage('createPrivateMessage')
@@ -52,15 +52,19 @@ export class MessagesGateway
       createPrivateMessageDto,
     );
 
+    const user = await this.usersService.findOne(
+      createPrivateMessageDto.receiverName,
+    );
     client.emit('privateMessageForClient', newPrivateMessage);
-
-    // this.server.emit('privateMessage', newPrivateMessage);
+    client
+      .to(user.socketID)
+      .emit('privateMessageForResiever', newPrivateMessage);
   }
 
   // get all messages
   @SubscribeMessage('getAllMessages')
-  async getAllMessages(@MessageBody() data: unknown) {
-    console.log('from getAllMessages: ', data);
+  async getAllMessages(@MessageBody() data: unknown): Promise<MessageEntity[]> {
+    // console.log('from getAllMessages: ', data);
     return await this.messagesService.findAllMessages();
   }
 
@@ -70,7 +74,7 @@ export class MessagesGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() createPrivateMessageDto: IPrivateMessage,
   ): Promise<void> {
-    console.log('from getAllPrivateMessages server: ', createPrivateMessageDto);
+    // console.log('from getAllPrivateMessages server: ', createPrivateMessageDto);
     const { receiverName, senderName } = createPrivateMessageDto;
     const allPrivateMessages = await this.messagesService.findPrivateMessagesBy(
       senderName,
@@ -80,7 +84,7 @@ export class MessagesGateway
   }
 
   @SubscribeMessage('getAllUsers')
-  async getAllUsers() {
+  async getAllUsers(): Promise<void> {
     const users = await this.messagesService.findAllUsers();
     const serializeUsers = users.map((user) => {
       user.password = null;
@@ -99,7 +103,7 @@ export class MessagesGateway
     this.server.emit('getAllUsers', users);
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
+  async handleConnection(client: Socket, ...args: any[]): Promise<void> {
     this.logger.log(`Client connected: ${client.id}`);
   }
 
