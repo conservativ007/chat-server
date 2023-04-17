@@ -15,6 +15,7 @@ import { UsersService } from 'src/users/users.service';
 import { CreatePrivateMessageDto } from './dto/create-private-message-dto';
 import { IPrivateMessage } from 'src/common/types/interfaces';
 import { MessageEntity } from './entities/message.entity';
+import { RemoveSenderNameMessageForWho } from './dto/removeSenderNameMessageForWho.dto';
 
 @WebSocketGateway({
   cors: {
@@ -37,8 +38,6 @@ export class MessagesGateway
   async handleMessage(
     @MessageBody() createMessageDto: CreateMessageDto,
   ): Promise<void> {
-    // console.log('server side payload');
-    // console.log(createMessageDto);
     await this.messagesService.createMessage(createMessageDto);
     this.server.emit('messageForAllChat', createMessageDto);
   }
@@ -55,10 +54,47 @@ export class MessagesGateway
     const user = await this.usersService.findOne(
       createPrivateMessageDto.receiverName,
     );
+
     client.emit('privateMessageForClient', newPrivateMessage);
     client
       .to(user.socketID)
       .emit('privateMessageForResiever', newPrivateMessage);
+
+    const receiverName = await this.usersService.findOne(
+      createPrivateMessageDto.receiverName,
+    );
+
+    if (receiverName.targetForMessage === createPrivateMessageDto.senderName) {
+      console.log(
+        'receiverName.targetForMessage === createPrivateMessageDto.senderName',
+      );
+      return;
+    }
+
+    // set status unreadMessage to true and emit getAllUsers
+    await this.usersService.addUserNameToMessageForWho(
+      createPrivateMessageDto.senderName,
+      createPrivateMessageDto.receiverName,
+    );
+    await this.getAllUsers();
+  }
+
+  @SubscribeMessage('removeNameForMessageTo')
+  async handleRemoveNameForMessageTo(
+    @MessageBody() { receiverName, senderName }: RemoveSenderNameMessageForWho,
+  ) {
+    await this.usersService.removeUserNameToMessageForWho(
+      senderName,
+      receiverName,
+    );
+    await this.getAllUsers();
+  }
+
+  @SubscribeMessage('selectUserForMessage')
+  async handleSelectUserForMessage(
+    @MessageBody() { receiverName, senderName }: RemoveSenderNameMessageForWho,
+  ) {
+    await this.usersService.selectUserForMessage(senderName, receiverName);
   }
 
   // get all messages
@@ -101,6 +137,11 @@ export class MessagesGateway
 
     const users = await this.messagesService.findAllUsers();
     this.server.emit('getAllUsers', users);
+
+    // when we are living from online we must overwrite the user.targetForMessage
+    const user = await this.usersService.findOneBySocketID(client.id);
+    user.targetForMessage = 'all';
+    await this.usersService.update(user);
   }
 
   async handleConnection(client: Socket, ...args: any[]): Promise<void> {

@@ -14,10 +14,10 @@ import { PrivateMessageEntity } from './messages/entities/privateMessage.entity'
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_FILTER,
-      useClass: CustomExceptionFilter,
-    },
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: CustomExceptionFilter,
+    // },
   ],
 })
 export class AppModule {}

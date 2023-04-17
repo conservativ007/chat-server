@@ -25,15 +25,11 @@ export class MessagesService {
   async createPrivateMessage(
     createPrivateMessageDto: CreatePrivateMessageDto,
   ): Promise<PrivateMessageEntity> {
-    // await this.chatRepository.save(createMessageDto);
-    console.log('server side private message service: ');
-    console.log(createPrivateMessageDto);
-
     const privateMessage = {
       senderName: createPrivateMessageDto.senderName,
       receiverName: createPrivateMessageDto.receiverName,
       message: createPrivateMessageDto.message,
-      messageStatus: false,
+      viewed: false,
     };
 
     const newPrivateMessage = await this.privateMessageRepository.create(
@@ -78,15 +74,11 @@ export class MessagesService {
 
   async findAllUsers() {
     const users = await this.userRepository.find();
-    // console.log('from findAllUsers service: ');
-    // console.log(users);
     return users;
   }
 
   async findAllMessages() {
     const messages = await this.chatRepository.find();
-    // console.log('from findAllUsers service: ');
-    // console.log(users);
     return messages;
   }
 }

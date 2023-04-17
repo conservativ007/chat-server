@@ -37,7 +37,7 @@ export class UsersController {
   async loginUser(@Body() dto: LoginUserDto) {
     console.log('server: from loginUser ');
     console.log(dto);
-    const user = await this.userService.getByLogin(
+    const user = await this.userService.Login(
       dto.login,
       dto.password,
       dto.socketID,

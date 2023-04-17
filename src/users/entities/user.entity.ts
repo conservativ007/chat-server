@@ -22,6 +22,13 @@ export class UserEntity {
   @Column()
   online: boolean;
 
+  @Column()
+  @Column({ nullable: true })
+  targetForMessage: string;
+
+  @Column('simple-array')
+  messageForWho: string[];
+
   @Column({ nullable: true })
   socketID: string;
 

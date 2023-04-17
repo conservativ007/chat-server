@@ -20,7 +20,7 @@ export class PrivateMessageEntity {
   message: string;
 
   @Column()
-  messageStatus: boolean;
+  viewed: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
