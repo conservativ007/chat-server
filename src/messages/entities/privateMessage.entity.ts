@@ -19,9 +19,6 @@ export class PrivateMessageEntity {
   @Column()
   message: string;
 
-  @Column()
-  viewed: boolean;
-
   @CreateDateColumn()
   createdAt: Date;
 }

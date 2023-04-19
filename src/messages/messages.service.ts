@@ -29,7 +29,6 @@ export class MessagesService {
       senderName: createPrivateMessageDto.senderName,
       receiverName: createPrivateMessageDto.receiverName,
       message: createPrivateMessageDto.message,
-      viewed: false,
     };
 
     const newPrivateMessage = await this.privateMessageRepository.create(

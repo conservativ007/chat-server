@@ -55,7 +55,7 @@ export class MessagesGateway
       createPrivateMessageDto.receiverName,
     );
 
-    client.emit('privateMessageForClient', newPrivateMessage);
+    client.emit('privateMessageForSender', newPrivateMessage);
     client
       .to(user.socketID)
       .emit('privateMessageForResiever', newPrivateMessage);
@@ -116,7 +116,7 @@ export class MessagesGateway
       senderName,
       receiverName,
     );
-    client.emit('privateMessagesForClient', allPrivateMessages);
+    client.emit('privateMessagesForClients', allPrivateMessages);
   }
 
   @SubscribeMessage('getAllUsers')
@@ -140,8 +140,10 @@ export class MessagesGateway
 
     // when we are living from online we must overwrite the user.targetForMessage
     const user = await this.usersService.findOneBySocketID(client.id);
-    user.targetForMessage = 'all';
-    await this.usersService.update(user);
+    if (user !== null) {
+      user.targetForMessage = 'all';
+      await this.usersService.update(user);
+    }
   }
 
   async handleConnection(client: Socket, ...args: any[]): Promise<void> {
