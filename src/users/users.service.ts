@@ -33,6 +33,7 @@ export class UsersService {
       version: 1,
       online: true,
       socketID,
+      avatar: 'cat',
       hasUnreadMessage: false,
       messageForWho: [],
       createdAt: Number(Date.now()),

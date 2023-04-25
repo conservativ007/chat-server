@@ -7,17 +7,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { APP_FILTER } from '@nestjs/core';
 import { CustomExceptionFilter } from './common/exceptions/CustomExceptionFilter';
-import { PrivateMessageEntity } from './messages/entities/privateMessage.entity';
+import { UserSettingsModule } from './user-settings/user-settings.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(newOrmConfig), MessagesModule, UsersModule],
+  imports: [
+    TypeOrmModule.forRoot(newOrmConfig),
+    MessagesModule,
+    UsersModule,
+    UserSettingsModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: CustomExceptionFilter,
-    // },
+    {
+      provide: APP_FILTER,
+      useClass: CustomExceptionFilter,
+    },
   ],
 })
 export class AppModule {}

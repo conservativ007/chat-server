@@ -47,4 +47,9 @@ export class UsersController {
     const serializeUser = new UserEntity(user);
     return serializeUser;
   }
+
+  @Post('/set-last-message')
+  async getLastMessages(@Body() dto) {
+    console.log(dto);
+  }
 }

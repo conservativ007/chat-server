@@ -32,6 +32,12 @@ export class UserEntity {
   @Column({ nullable: true })
   socketID: string;
 
+  @Column({ nullable: true })
+  lastMessage: string;
+
+  @Column({ nullable: true })
+  avatar: string;
+
   @Column({ type: 'bigint' })
   createdAt: number;
 

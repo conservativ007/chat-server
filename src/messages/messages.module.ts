@@ -13,5 +13,6 @@ import { PrivateMessageEntity } from './entities/privateMessage.entity';
     TypeOrmModule.forFeature([MessageEntity, UserEntity, PrivateMessageEntity]),
   ],
   providers: [MessagesGateway, MessagesService],
+  exports: [MessagesService],
 })
 export class MessagesModule {}
