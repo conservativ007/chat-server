@@ -10,14 +10,6 @@ export class UserSettingsService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  findAll() {
-    return `This action returns all userSettings`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} userSetting`;
-  }
-
   async changeUserAvatar(id: string, avatar: string) {
     const user = await this.userRepository.findOne({ where: { id } });
     if (user === null)

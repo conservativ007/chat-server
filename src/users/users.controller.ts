@@ -1,18 +1,9 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpCode } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
-import { WebSocketGateway } from '@nestjs/websockets';
 import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateUserLoginDto } from './dto/update-user-login.dto';
 
 @Controller('users')
 export class UsersController {
@@ -51,5 +42,15 @@ export class UsersController {
   @Post('/set-last-message')
   async getLastMessages(@Body() dto) {
     console.log(dto);
+  }
+
+  @HttpCode(200)
+  @Post('/change-username')
+  async changeUsername(@Body() dto: UpdateUserLoginDto) {
+    const user = await this.userService.changeUserLogin(
+      dto.userId,
+      dto.newLogin,
+    );
+    return user;
   }
 }

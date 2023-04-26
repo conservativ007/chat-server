@@ -133,4 +133,26 @@ export class UsersService {
   async update(user: UserEntity) {
     await this.userRepository.save(user);
   }
+
+  async changeUserLogin(id: string, newUserLogin: string) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (user === null)
+      throw new HttpException(
+        'user not found changeUserAvatar',
+        HttpStatus.NOT_FOUND,
+      );
+
+    const isUserAlreadyExist = await this.userRepository.findOne({
+      where: { login: newUserLogin },
+    });
+    if (isUserAlreadyExist !== null)
+      throw new HttpException(
+        'the user with the same name already exists',
+        HttpStatus.FORBIDDEN,
+      );
+
+    user.login = newUserLogin;
+    await this.userRepository.save(user);
+    return user;
+  }
 }

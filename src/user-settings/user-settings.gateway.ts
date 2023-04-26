@@ -50,6 +50,9 @@ export class UserSettingsGateway
     console.log('selectUserForMessage');
     console.log(receiverName, senderName);
     await this.usersService.selectUserForMessage(senderName, receiverName);
+
+    const user = await this.usersService.findOne(senderName);
+    return user;
   }
 
   // in this keys we must in user store find user to socketID
