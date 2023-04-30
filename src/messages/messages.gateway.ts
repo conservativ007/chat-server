@@ -45,20 +45,16 @@ export class MessagesGateway {
       createPrivateMessageDto,
     );
 
-    const user = await this.usersService.findOne(
+    const receiverUser = await this.usersService.findOneByUserLogin(
       createPrivateMessageDto.receiverName,
     );
 
     client.emit('privateMessageForSender', newPrivateMessage);
     client
-      .to(user.socketID)
+      .to(receiverUser.socketID)
       .emit('privateMessageForResiever', newPrivateMessage);
 
-    const receiverName = await this.usersService.findOne(
-      createPrivateMessageDto.receiverName,
-    );
-
-    if (receiverName.targetForMessage === createPrivateMessageDto.senderName) {
+    if (receiverUser.targetForMessage === createPrivateMessageDto.senderName) {
       console.log(
         'receiverName.targetForMessage === createPrivateMessageDto.senderName',
       );
@@ -107,12 +103,13 @@ export class MessagesGateway {
   }
 
   @SubscribeMessage('getAllUsers')
-  async getAllUsers(@MessageBody() userName?: string): Promise<void> {
+  async getAllUsers(@MessageBody() myselfLogin?: string): Promise<void> {
     const users = await this.messagesService.findAllUsers();
-    const serializeUsers = users.map((user) => {
-      user.password = null;
-      return user;
-    });
-    this.server.emit('getAllUsers', serializeUsers);
+    // const serializeUsers = users.map((user) => {
+    //   user.password = null;
+    //   return user;
+    // });
+
+    this.server.emit('getAllUsers', users);
   }
 }

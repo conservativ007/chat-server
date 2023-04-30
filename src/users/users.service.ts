@@ -88,7 +88,7 @@ export class UsersService {
   }
 
   async addUserNameToMessageForWho(senderName: string, receiverName: string) {
-    const senderUser = await this.findOne(senderName);
+    const senderUser = await this.findOneByUserLogin(senderName);
     const isResieverNameExist = senderUser.messageForWho.includes(receiverName);
 
     if (isResieverNameExist === true) return;
@@ -101,7 +101,7 @@ export class UsersService {
     senderName: string,
     receiverName: string,
   ) {
-    const receiverUser = await this.findOne(receiverName);
+    const receiverUser = await this.findOneByUserLogin(receiverName);
     const foundIndex = receiverUser.messageForWho.findIndex(
       (userName) => userName === senderName,
     );
@@ -112,7 +112,7 @@ export class UsersService {
   }
 
   async selectUserForMessage(senderName: string, receiverName: string) {
-    let foundUser = await this.findOne(senderName);
+    let foundUser = await this.findOneByUserLogin(senderName);
     if (foundUser === null) {
       return new HttpException('user not found', HttpStatus.NOT_FOUND);
     }
@@ -120,8 +120,23 @@ export class UsersService {
     await this.userRepository.save(foundUser);
   }
 
-  async findOne(login: string) {
+  async findOneByUserLogin(login: string) {
     const user = await this.userRepository.findOneBy({ login });
+    if (user === null)
+      throw new HttpException(
+        'user not found changeUserAvatar',
+        HttpStatus.NOT_FOUND,
+      );
+    return user;
+  }
+
+  async findOneById(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (user === null)
+      throw new HttpException(
+        'user not found changeUserAvatar',
+        HttpStatus.NOT_FOUND,
+      );
     return user;
   }
 
@@ -135,12 +150,7 @@ export class UsersService {
   }
 
   async changeUserLogin(id: string, newUserLogin: string) {
-    const user = await this.userRepository.findOne({ where: { id } });
-    if (user === null)
-      throw new HttpException(
-        'user not found changeUserAvatar',
-        HttpStatus.NOT_FOUND,
-      );
+    const user = await this.findOneById(id);
 
     const isUserAlreadyExist = await this.userRepository.findOne({
       where: { login: newUserLogin },
@@ -153,6 +163,23 @@ export class UsersService {
 
     user.login = newUserLogin;
     await this.userRepository.save(user);
+    return user;
+  }
+
+  async changeUserPassword(
+    id: string,
+    oldPassword: string,
+    newPassword: string,
+  ) {
+    const user = await this.findOneById(id);
+
+    if (oldPassword !== user.password) {
+      throw new HttpException('old password is wrong!', HttpStatus.FORBIDDEN);
+    }
+
+    user.password = newPassword;
+    await this.userRepository.save(user);
+
     return user;
   }
 }

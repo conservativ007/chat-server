@@ -47,11 +47,12 @@ export class UserSettingsGateway
   async handleSelectUserForMessage(
     @MessageBody() { receiverName, senderName }: RemoveSenderNameMessageForWho,
   ) {
-    console.log('selectUserForMessage');
-    console.log(receiverName, senderName);
+    // console.log('selectUserForMessage');
+    // console.log('senderName: ', senderName);
+    // console.log('receiverName: ', receiverName);
     await this.usersService.selectUserForMessage(senderName, receiverName);
 
-    const user = await this.usersService.findOne(senderName);
+    const user = await this.usersService.findOneByUserLogin(senderName);
     return user;
   }
 
