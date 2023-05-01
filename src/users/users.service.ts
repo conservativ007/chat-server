@@ -33,7 +33,7 @@ export class UsersService {
       version: 1,
       online: true,
       socketID,
-      avatar: 'cat',
+      avatar: 'https://i.ibb.co/pzMk1pf/2253542a88b4.png',
       hasUnreadMessage: false,
       messageForWho: [],
       createdAt: Number(Date.now()),
