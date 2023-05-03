@@ -16,7 +16,9 @@ export class UsersService {
   }
 
   async create({ login, password, socketID }): Promise<UserEntity> {
-    // const hashedPassword = await this.hashData(password);
+    console.log('create({ login, password, socketID })');
+    console.log(login, password, socketID);
+    const hashedPassword = await this.hashData(password);
 
     const inUserExists = await this.userRepository.findOneBy({
       login,
@@ -28,8 +30,7 @@ export class UsersService {
 
     const user = {
       login,
-      // password: hashedPassword,
-      password,
+      password: hashedPassword,
       version: 1,
       online: true,
       socketID,
@@ -42,49 +43,13 @@ export class UsersService {
 
     // console.log(user);
     const newUser = this.userRepository.create(user);
-    return await this.userRepository.save(newUser);
+    await this.userRepository.save(newUser);
+    return newUser;
   }
 
   async getAll(): Promise<UserEntity[]> {
     const users = await this.userRepository.find();
     return users;
-  }
-
-  async setStatusUserToOffline(socketID: string): Promise<void> {
-    const users = await this.getAll();
-
-    const foundIndex = users.findIndex((user) => user.socketID === socketID);
-
-    if (foundIndex === -1) {
-      return;
-      // throw new Error('from setStatusUserToOffline');
-    }
-    const foundUser = users[foundIndex];
-    foundUser.online = false;
-    // foundUser.socketID = '';
-    await this.userRepository.save(foundUser);
-  }
-
-  async Login(
-    login: string,
-    password: string,
-    socketID: string,
-  ): Promise<UserEntity> {
-    let user = await this.userRepository.findOne({
-      where: {
-        login,
-        password,
-      },
-    });
-
-    if (user === null) {
-      throw new HttpException('ivalid login or password', HttpStatus.NOT_FOUND);
-    }
-
-    user.socketID = socketID;
-    user.online = true;
-    await this.userRepository.save(user);
-    return user;
   }
 
   async addUserNameToMessageForWho(senderName: string, receiverName: string) {
@@ -121,27 +86,27 @@ export class UsersService {
   }
 
   async findOneByUserLogin(login: string) {
+    // this is a temporary solution, watch the error on the front
+    if (login === 'all') return;
     const user = await this.userRepository.findOneBy({ login });
-    if (user === null)
-      throw new HttpException(
-        'user not found changeUserAvatar',
-        HttpStatus.NOT_FOUND,
-      );
+    if (user === null) {
+      throw new HttpException(`user ${login} not found`, HttpStatus.NOT_FOUND);
+    }
+
     return user;
   }
 
   async findOneById(id: string) {
     const user = await this.userRepository.findOneBy({ id });
     if (user === null)
-      throw new HttpException(
-        'user not found changeUserAvatar',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     return user;
   }
 
   async findOneBySocketID(socketID: string) {
     const user = await this.userRepository.findOneBy({ socketID });
+    if (user === null)
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     return user;
   }
 

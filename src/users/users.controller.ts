@@ -1,8 +1,6 @@
 import { Controller, Get, Post, Body, HttpCode } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserEntity } from './entities/user.entity';
-import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserLoginDto } from './dto/update-user-login.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 
@@ -19,18 +17,6 @@ export class UsersController {
   async createUser(@Body() dto: CreateUserDto) {
     const user = await this.userService.create(dto);
     return user;
-  }
-
-  @Post('/login')
-  async loginUser(@Body() dto: LoginUserDto) {
-    const user = await this.userService.Login(
-      dto.login,
-      dto.password,
-      dto.socketID,
-    );
-
-    const serializeUser = new UserEntity(user);
-    return serializeUser;
   }
 
   @HttpCode(200)

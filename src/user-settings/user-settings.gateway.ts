@@ -14,6 +14,7 @@ import { Logger } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { RemoveSenderNameMessageForWho } from './dto/removeSenderNameMessageForWho.dto';
 import { MessagesService } from 'src/messages/messages.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @WebSocketGateway({
   cors: {
@@ -29,6 +30,7 @@ export class UserSettingsGateway
   constructor(
     private readonly userSettingsService: UserSettingsService,
     private readonly usersService: UsersService,
+    private readonly authService: AuthService,
     private readonly messagesService: MessagesService,
   ) {}
   private logger: Logger = new Logger('UserSettingsGateway');
@@ -47,9 +49,6 @@ export class UserSettingsGateway
   async handleSelectUserForMessage(
     @MessageBody() { receiverName, senderName }: RemoveSenderNameMessageForWho,
   ) {
-    // console.log('selectUserForMessage');
-    // console.log('senderName: ', senderName);
-    // console.log('receiverName: ', receiverName);
     await this.usersService.selectUserForMessage(senderName, receiverName);
 
     const user = await this.usersService.findOneByUserLogin(senderName);
@@ -60,17 +59,11 @@ export class UserSettingsGateway
   // and turn status --> ofline and remove socketID
   async handleDisconnect(client: Socket): Promise<void> {
     this.logger.log(`Client disconnected: ${client.id}`);
-    await this.usersService.setStatusUserToOffline(client.id);
+    // pass the socketID
+    await this.authService.logout(client.id);
 
-    const users = await this.messagesService.findAllUsers();
+    const users = await this.usersService.getAll();
     this.server.emit('getAllUsers', users);
-
-    // when we are living from online we must overwrite the user.targetForMessage
-    const user = await this.usersService.findOneBySocketID(client.id);
-    if (user !== null) {
-      user.targetForMessage = 'all';
-      await this.usersService.update(user);
-    }
   }
 
   async handleConnection(client: Socket, ...args: any[]): Promise<void> {

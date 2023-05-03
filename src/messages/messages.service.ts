@@ -3,7 +3,6 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { MessageEntity } from './entities/message.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserEntity } from 'src/users/entities/user.entity';
 import { CreatePrivateMessageDto } from './dto/create-private-message-dto';
 import { PrivateMessageEntity } from './entities/privateMessage.entity';
 
@@ -14,8 +13,6 @@ export class MessagesService {
     private chatRepository: Repository<MessageEntity>,
     @InjectRepository(PrivateMessageEntity)
     private privateMessageRepository: Repository<PrivateMessageEntity>,
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
   ) {}
 
   async createMessage(createMessageDto: CreateMessageDto): Promise<void> {
@@ -69,11 +66,6 @@ export class MessagesService {
     });
     // console.log(correctedMessages);
     return correctedMessages;
-  }
-
-  async findAllUsers() {
-    const users = await this.userRepository.find();
-    return users;
   }
 
   async findAllMessages() {

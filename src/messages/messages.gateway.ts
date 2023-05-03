@@ -93,7 +93,6 @@ export class MessagesGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() createPrivateMessageDto: IPrivateMessage,
   ): Promise<void> {
-    // console.log('from getAllPrivateMessages server: ', createPrivateMessageDto);
     const { receiverName, senderName } = createPrivateMessageDto;
     const allPrivateMessages = await this.messagesService.findPrivateMessagesBy(
       senderName,
@@ -104,12 +103,7 @@ export class MessagesGateway {
 
   @SubscribeMessage('getAllUsers')
   async getAllUsers(@MessageBody() myselfLogin?: string): Promise<void> {
-    const users = await this.messagesService.findAllUsers();
-    // const serializeUsers = users.map((user) => {
-    //   user.password = null;
-    //   return user;
-    // });
-
+    const users = await this.usersService.getAll();
     this.server.emit('getAllUsers', users);
   }
 }

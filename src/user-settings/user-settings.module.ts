@@ -5,6 +5,7 @@ import { UserEntity } from 'src/users/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from 'src/users/users.module';
 import { MessagesModule } from 'src/messages/messages.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   providers: [UserSettingsGateway, UserSettingsService],
@@ -12,6 +13,7 @@ import { MessagesModule } from 'src/messages/messages.module';
     TypeOrmModule.forFeature([UserEntity]),
     UsersModule,
     MessagesModule,
+    AuthModule,
   ],
 })
 export class UserSettingsModule {}
