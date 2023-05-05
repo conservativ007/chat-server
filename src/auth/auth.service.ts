@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { Tokens } from './types';
 import { UserEntity } from 'src/users/entities/user.entity';
@@ -24,11 +29,8 @@ export class AuthService {
 
   async updateRtHash(user: UserEntity, rt: string) {
     const hashedRefreshToken = await this.hashData(rt);
-
-    await this.userRepository.save({
-      ...user,
-      hashedRt: hashedRefreshToken,
-    });
+    user.hashedRt = hashedRefreshToken;
+    await this.userRepository.save(user);
   }
 
   async getTokens(userId: string, login: string): Promise<Tokens> {
@@ -60,15 +62,11 @@ export class AuthService {
 
     const tokens = await this.getTokens(user.id, user.login);
     await this.updateRtHash(user, tokens.refreshToken);
-    // console.log(`signup`);
-    // console.log(user);
-    // return user;
-
     return [user, tokens];
   }
 
   async login(dto: AuthDto) {
-    const { login, password, socketID } = dto;
+    const { login, password } = dto;
     const user: UserEntity = await this.usersService.findOneByUserLogin(login);
 
     // compare passwords
@@ -79,17 +77,24 @@ export class AuthService {
     const tokens = await this.getTokens(user.id, user.login);
     await this.updateRtHash(user, tokens.refreshToken);
 
-    user.socketID = socketID;
+    // user.socketID = socketID;
     user.online = true;
     await this.userRepository.save(user);
 
     return [user, tokens];
   }
 
-  async logout(socketID: string) {
-    const user: UserEntity = await this.usersService.findOneBySocketID(
-      socketID,
-    );
+  async logout(userId: string, unexpectedDisconnect: boolean) {
+    let user: UserEntity;
+    if (unexpectedDisconnect === true) {
+      user = await this.usersService.findOneBySocketID(userId);
+    }
+    if (unexpectedDisconnect === false) {
+      user = await this.usersService.findOneById(userId);
+    }
+
+    // temporary solution
+    if (user === null) return;
 
     user.hashedRt = null;
     user.online = false;
@@ -97,5 +102,33 @@ export class AuthService {
     await this.userRepository.save(user);
   }
 
-  refreshTokens() {}
+  async refreshTokens(userId: string, rt: string) {
+    const user = await this.usersService.findOneById(userId);
+
+    console.log('refreshTokens');
+    console.log(userId, rt);
+    const rtMatches = bcrypt.compare(rt, user.hashedRt);
+    if (!rtMatches) throw new ForbiddenException('Access Denied');
+
+    const tokens = await this.getTokens(user.id, user.login);
+    await this.updateRtHash(user, tokens.refreshToken);
+  }
+
+  async attachSocketToUser(socketId: string, userId: string) {
+    const user = await this.usersService.findOneById(userId);
+    user.socketID = socketId;
+    await this.userRepository.save(user);
+
+    return user.socketID;
+  }
+
+  async verifyAccessToken(token: string) {
+    try {
+      return await this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET_KEY,
+      });
+    } catch (error) {
+      throw new HttpException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
+    }
+  }
 }

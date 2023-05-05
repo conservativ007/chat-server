@@ -1,21 +1,15 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthDto } from './dto';
-import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
 import { WebSocketServer } from '@nestjs/websockets';
 
 import { Server } from 'socket.io';
-import { UsersService } from 'src/users/users.service';
 import { LogoutDto } from './dto/logout.dto';
+import { RefreshDto } from './dto/refresh.dto';
+import { AttachSocketDto } from './dto/attach-socket.dto';
+import { RtGuard } from './common/guards';
+import { Public } from './common/decorators';
 
 @Controller('auth')
 export class AuthController {
@@ -25,30 +19,42 @@ export class AuthController {
   server: Server;
 
   @HttpCode(201)
+  @Public()
   @Post('/signup')
   async signup(@Body() dto: CreateUserDto) {
     return await this.authService.signup(dto);
   }
 
   @HttpCode(200)
+  @Public()
   @Post('/login')
   async login(@Body() dto: AuthDto) {
-    console.log('auth login');
-    console.log(dto);
     return await this.authService.login(dto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @HttpCode(200)
   @Post('/logout')
-  async logout(@Body() { socketID }: LogoutDto) {
-    await this.authService.logout(socketID);
+  async logout(@Body() { userId }: LogoutDto) {
+    await this.authService.logout(userId, false);
   }
 
-  @UseGuards(AuthGuard('jwt-refresh'))
+  @Public()
+  @UseGuards(RtGuard)
   @HttpCode(200)
   @Post('/refresh')
-  async refreshTokens() {
-    await this.authService.refreshTokens();
+  async refreshTokens(@Body() { userId, rt }: RefreshDto) {
+    await this.authService.refreshTokens(userId, rt);
+  }
+
+  @Public()
+  @HttpCode(200)
+  @Post('/attachsocket')
+  async attachsocket(@Body() dto: AttachSocketDto) {
+    const { socketId, userId } = dto;
+    const socketIdFromService = await this.authService.attachSocketToUser(
+      socketId,
+      userId,
+    );
+    return socketIdFromService;
   }
 }

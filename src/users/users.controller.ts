@@ -13,12 +13,6 @@ export class UsersController {
     return this.userService.getAll();
   }
 
-  @Post()
-  async createUser(@Body() dto: CreateUserDto) {
-    const user = await this.userService.create(dto);
-    return user;
-  }
-
   @HttpCode(200)
   @Post('/change-username')
   async changeUserName(@Body() dto: UpdateUserLoginDto) {
@@ -32,12 +26,7 @@ export class UsersController {
   @HttpCode(200)
   @Post('/change-userpassword')
   async changeUserPassword(@Body() dto: UpdateUserPasswordDto) {
-    const { userId, newPassword, oldPassword } = dto;
-    const user = await this.userService.changeUserPassword(
-      userId,
-      oldPassword,
-      newPassword,
-    );
+    const user = await this.userService.changeUserPassword(dto);
     return user;
   }
 }

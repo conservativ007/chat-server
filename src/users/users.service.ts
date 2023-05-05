@@ -1,8 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { compare, hash } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -15,9 +21,9 @@ export class UsersService {
     return hash(data, 10);
   }
 
-  async create({ login, password, socketID }): Promise<UserEntity> {
-    console.log('create({ login, password, socketID })');
-    console.log(login, password, socketID);
+  async create({ login, password }): Promise<UserEntity> {
+    console.log('create');
+    console.log(login, password);
     const hashedPassword = await this.hashData(password);
 
     const inUserExists = await this.userRepository.findOneBy({
@@ -33,7 +39,7 @@ export class UsersService {
       password: hashedPassword,
       version: 1,
       online: true,
-      socketID,
+      socketID: null,
       avatar: 'https://i.ibb.co/pzMk1pf/2253542a88b4.png',
       hasUnreadMessage: false,
       messageForWho: [],
@@ -77,6 +83,8 @@ export class UsersService {
   }
 
   async selectUserForMessage(senderName: string, receiverName: string) {
+    // console.log('selectUserForMessage');
+    // console.log(senderName, receiverName);
     let foundUser = await this.findOneByUserLogin(senderName);
     if (foundUser === null) {
       return new HttpException('user not found', HttpStatus.NOT_FOUND);
@@ -105,8 +113,14 @@ export class UsersService {
 
   async findOneBySocketID(socketID: string) {
     const user = await this.userRepository.findOneBy({ socketID });
-    if (user === null)
+    // console.log('findOneBySocketID');
+    // console.log(user);
+    // temporary solution
+    // because all exception filter don't work here...
+    if (user === null) {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    }
+
     return user;
   }
 
@@ -131,18 +145,22 @@ export class UsersService {
     return user;
   }
 
-  async changeUserPassword(
-    id: string,
-    oldPassword: string,
-    newPassword: string,
-  ) {
-    const user = await this.findOneById(id);
+  async changeUserPassword(dto: UpdateUserPasswordDto) {
+    const { userId, newPassword, oldPassword } = dto;
 
-    if (oldPassword !== user.password) {
-      throw new HttpException('old password is wrong!', HttpStatus.FORBIDDEN);
-    }
+    const user = await this.findOneById(userId);
 
-    user.password = newPassword;
+    // compare passwords
+    const passwordMatches = await compare(oldPassword, user.password);
+    if (!passwordMatches) throw new ForbiddenException('Access Denied');
+
+    console.log(userId);
+    console.log(newPassword);
+    console.log(oldPassword);
+
+    const hashedPassword = await this.hashData(newPassword);
+
+    user.password = hashedPassword;
     await this.userRepository.save(user);
 
     return user;

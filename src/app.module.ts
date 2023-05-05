@@ -6,17 +6,13 @@ import { MessagesModule } from './messages/messages.module';
 import { newOrmConfig } from './common/typeOrm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { CustomExceptionFilter } from './common/exceptions/CustomExceptionFilter';
 import { UserSettingsModule } from './user-settings/user-settings.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
-import { UserEntity } from './users/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
-
-// import { getEnvPath } from './common/env.helper';
-
-// const envFilePath: string = getEnvPath(`${__dirname}/common`);
-// console.log(envFilePath);
+import { AllExceptionsFilter } from './common/exceptions/AllExceptionsFilter';
+import { AtGuard } from './auth/common/guards';
 
 @Module({
   imports: [
@@ -31,10 +27,14 @@ import { AuthModule } from './auth/auth.module';
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: CustomExceptionFilter,
-    // },
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AtGuard,
+    },
   ],
 })
 export class AppModule {}

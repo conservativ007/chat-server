@@ -31,7 +31,6 @@ export class UserSettingsGateway
     private readonly userSettingsService: UserSettingsService,
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
-    private readonly messagesService: MessagesService,
   ) {}
   private logger: Logger = new Logger('UserSettingsGateway');
 
@@ -60,7 +59,7 @@ export class UserSettingsGateway
   async handleDisconnect(client: Socket): Promise<void> {
     this.logger.log(`Client disconnected: ${client.id}`);
     // pass the socketID
-    await this.authService.logout(client.id);
+    await this.authService.logout(client.id, true);
 
     const users = await this.usersService.getAll();
     this.server.emit('getAllUsers', users);

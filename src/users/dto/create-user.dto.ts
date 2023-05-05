@@ -1,12 +1,9 @@
 import { IsString } from 'class-validator';
 
 export class CreateUserDto {
-  @IsString({ message: 'login must be a string' })
+  @IsString()
   login: string;
 
-  @IsString({ message: 'password must be a string' })
-  password: string;
-
   @IsString()
-  socketID: string;
+  password: string;
 }
