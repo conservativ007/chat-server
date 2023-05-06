@@ -83,8 +83,12 @@ export class UsersService {
   }
 
   async selectUserForMessage(senderName: string, receiverName: string) {
-    // console.log('selectUserForMessage');
-    // console.log(senderName, receiverName);
+    if (senderName === 'all') {
+      console.log('selectUserForMessage');
+      console.log(senderName, receiverName);
+      console.log('senderName === all');
+      return;
+    }
     let foundUser = await this.findOneByUserLogin(senderName);
     if (foundUser === null) {
       return new HttpException('user not found', HttpStatus.NOT_FOUND);
@@ -112,13 +116,16 @@ export class UsersService {
   }
 
   async findOneBySocketID(socketID: string) {
-    const user = await this.userRepository.findOneBy({ socketID });
-    // console.log('findOneBySocketID');
-    // console.log(user);
-    // temporary solution
-    // because all exception filter don't work here...
-    if (user === null) {
-      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    let user: UserEntity;
+
+    // in this keys custon exception filter doesn't work
+    // because the method findOneBySocketID is triggered
+    // from handleDisconnect (user settings gateway)
+    try {
+      user = await this.userRepository.findOneByOrFail({ socketID });
+    } catch (error) {
+      console.log('from findOneBySocketID');
+      console.log(error);
     }
 
     return user;

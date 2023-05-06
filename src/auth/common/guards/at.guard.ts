@@ -15,9 +15,6 @@ export class AtGuard extends AuthGuard('jwt') {
       context.getClass(),
     ]);
 
-    // console.log('isPublic');
-    // console.log(isPublic);
-
     if (isPublic) return true;
 
     const request = context.switchToHttp().getRequest();
@@ -31,10 +28,8 @@ export class AtGuard extends AuthGuard('jwt') {
     if (bearer !== 'Bearer' || !accessToken)
       throw new HttpException('the authorization isn"t corrected', 401);
 
-    // console.log('accessToken');
-    // console.log(accessToken);
-
-    request.user = await this.authService.verifyAccessToken(accessToken);
+    const payload = await this.authService.verifyAccessToken(accessToken);
+    request.user = payload;
     return true;
   }
 }

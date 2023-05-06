@@ -46,6 +46,12 @@ export class AuthController {
     await this.authService.refreshTokens(userId, rt);
   }
 
+  @HttpCode(204)
+  @Post('/delete')
+  async delete(@Body() { userId }: LogoutDto) {
+    await this.authService.delete(userId);
+  }
+
   @Public()
   @HttpCode(200)
   @Post('/attachsocket')

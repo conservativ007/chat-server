@@ -9,7 +9,9 @@ import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    JwtModule.register({}),
+    JwtModule.register({
+      global: true,
+    }),
     TypeOrmModule.forFeature([UserEntity]),
     UsersModule,
   ],

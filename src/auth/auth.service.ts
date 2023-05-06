@@ -66,6 +66,7 @@ export class AuthService {
   }
 
   async login(dto: AuthDto) {
+    // throw new ForbiddenException('Access Denied');
     const { login, password } = dto;
     const user: UserEntity = await this.usersService.findOneByUserLogin(login);
 
@@ -94,7 +95,7 @@ export class AuthService {
     }
 
     // temporary solution
-    if (user === null) return;
+    if (user === null || user === undefined) return;
 
     user.hashedRt = null;
     user.online = false;
@@ -105,8 +106,6 @@ export class AuthService {
   async refreshTokens(userId: string, rt: string) {
     const user = await this.usersService.findOneById(userId);
 
-    console.log('refreshTokens');
-    console.log(userId, rt);
     const rtMatches = bcrypt.compare(rt, user.hashedRt);
     if (!rtMatches) throw new ForbiddenException('Access Denied');
 
@@ -130,5 +129,11 @@ export class AuthService {
     } catch (error) {
       throw new HttpException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
     }
+  }
+
+  // DANGER ZONE
+  async delete(userId: string) {
+    const user = await this.usersService.findOneById(userId);
+    await this.userRepository.remove(user);
   }
 }

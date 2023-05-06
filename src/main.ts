@@ -18,8 +18,8 @@ async function bootstrap() {
   );
 
   // app.useGlobalFilters(new CustomExceptionFilter());
-  const httpAdapterHost = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new AllExceptionsFilter(httpAdapterHost));
+  // const httpAdapterHost = app.get(HttpAdapterHost);
+  // app.useGlobalFilters(new AllExceptionsFilter(httpAdapterHost));
 
   await app.listen(3001);
   console.log(`The server is listening on port ${PORT}`);

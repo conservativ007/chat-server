@@ -55,9 +55,10 @@ export class UserSettingsGateway
   }
 
   // in this keys we must in user store find user to socketID
-  // and turn status --> ofline and remove socketID
+  // and turn status --> ofline
   async handleDisconnect(client: Socket): Promise<void> {
     this.logger.log(`Client disconnected: ${client.id}`);
+
     // pass the socketID
     await this.authService.logout(client.id, true);
 
