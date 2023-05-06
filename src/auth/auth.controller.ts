@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthDto } from './dto';
 import { WebSocketServer } from '@nestjs/websockets';
 

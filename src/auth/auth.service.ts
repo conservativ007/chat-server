@@ -6,12 +6,12 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { Tokens } from './types';
-import { UserEntity } from 'src/users/entities/user.entity';
+import { UserEntity } from '../users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { AuthDto } from './dto';
 
 @Injectable()
@@ -57,7 +57,9 @@ export class AuthService {
   }
 
   // be careful in this keys we call to usersService not userRepository
-  async signup(dto: CreateUserDto) {
+  async signup(
+    dto: CreateUserDto,
+  ): Promise<[user: UserEntity, tokens: Tokens]> {
     const user: UserEntity = await this.usersService.create(dto);
 
     const tokens = await this.getTokens(user.id, user.login);

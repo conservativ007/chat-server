@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { compare, hash } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -111,7 +112,8 @@ export class UsersService {
   async findOneById(id: string) {
     const user = await this.userRepository.findOneBy({ id });
     if (user === null)
-      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+      // throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('user not found');
     return user;
   }
 
@@ -152,7 +154,7 @@ export class UsersService {
     return user;
   }
 
-  async changeUserPassword(dto: UpdateUserPasswordDto) {
+  async changeUserPassword(dto: UpdateUserPasswordDto): Promise<UserEntity> {
     const { userId, newPassword, oldPassword } = dto;
 
     const user = await this.findOneById(userId);
