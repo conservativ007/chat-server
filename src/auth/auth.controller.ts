@@ -1,4 +1,12 @@
-import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Post,
+  Delete,
+  UseGuards,
+  Param,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthDto } from './dto';
@@ -47,8 +55,8 @@ export class AuthController {
   }
 
   @HttpCode(204)
-  @Post('/delete')
-  async delete(@Body() { userId }: LogoutDto) {
+  @Delete('/delete/:userId')
+  async delete(@Param() { userId }: LogoutDto) {
     await this.authService.delete(userId);
   }
 

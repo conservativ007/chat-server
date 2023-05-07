@@ -7,6 +7,8 @@ import { UpdateUserPasswordDto } from 'src/users/dto/update-user-password.dto';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 
+import { testUser } from './test.constants';
+
 import { compare } from 'bcrypt';
 
 describe('AuthService Int', () => {
@@ -18,19 +20,6 @@ describe('AuthService Int', () => {
 
   const newLogin = 'new-login';
   let updatedUser: UserEntity;
-
-  const testUser = {
-    login: 'test-login',
-    password: '123',
-    version: 1,
-    online: true,
-    socketID: null,
-    avatar: 'https://i.ibb.co/pzMk1pf/2253542a88b4.png',
-    hasUnreadMessage: false,
-    messageForWho: [],
-    createdAt: Number(Date.now()),
-    updatedAt: Number(Date.now()),
-  };
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -63,6 +52,7 @@ describe('AuthService Int', () => {
     it('should update user login', async () => {
       updatedUser = await userService.changeUserLogin(user.id, newLogin);
       expect(updatedUser.login === newLogin).toBe(true);
+      expect(updatedUser.version).toBe(2);
     });
   });
 
@@ -77,6 +67,7 @@ describe('AuthService Int', () => {
       updatedUser = await userService.changeUserPassword(test);
       const isTrue = await compare(test.newPassword, updatedUser.password);
       expect(isTrue).toBe(true);
+      expect(updatedUser.version).toBe(3);
     });
   });
 
