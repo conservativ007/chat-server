@@ -23,8 +23,6 @@ export class UsersService {
   }
 
   async create({ login, password }): Promise<UserEntity> {
-    console.log('create');
-    console.log(login, password);
     const hashedPassword = await this.hashData(password);
 
     const inUserExists = await this.userRepository.findOneBy({
@@ -85,9 +83,6 @@ export class UsersService {
 
   async selectUserForMessage(senderName: string, receiverName: string) {
     if (senderName === 'all') {
-      console.log('selectUserForMessage');
-      console.log(senderName, receiverName);
-      console.log('senderName === all');
       return;
     }
     let foundUser = await this.findOneByUserLogin(senderName);
@@ -126,7 +121,7 @@ export class UsersService {
     try {
       user = await this.userRepository.findOneByOrFail({ socketID });
     } catch (error) {
-      console.log('from findOneBySocketID');
+      // console.log('from findOneBySocketID');
       console.log(error);
     }
 
@@ -157,10 +152,6 @@ export class UsersService {
 
   async changeUserPassword(dto: UpdateUserPasswordDto): Promise<UserEntity> {
     const { userId, newPassword, oldPassword } = dto;
-
-    console.log('from changeUserPassword');
-    console.log(userId, newPassword, oldPassword);
-
     const user = await this.findOneById(userId);
 
     // compare passwords

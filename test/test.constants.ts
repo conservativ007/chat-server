@@ -8,6 +8,7 @@ interface IConstants {
   URL_CHANGE_USERNAME: string;
   URL_CHANGE_USERPASSWORD: string;
   DELETE: string;
+  GET_ONE_USER: string;
 }
 
 export const CONSTANTS: IConstants = {
@@ -18,10 +19,11 @@ export const CONSTANTS: IConstants = {
   URL_CHANGE_USERNAME: '/users/change-username',
   URL_CHANGE_USERPASSWORD: '/users/change-userpassword',
   DELETE: '/auth/delete',
+  GET_ONE_USER: '/users',
 };
 
 export const testUser: Omit<UserEntity, 'id'> = {
-  login: 'test-login',
+  login: 'test-user',
   password: '123',
   version: 1,
   online: true,

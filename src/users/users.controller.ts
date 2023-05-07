@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  HttpCode,
+  Param,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserLoginDto } from './dto/update-user-login.dto';
@@ -29,6 +37,13 @@ export class UsersController {
     console.log('/change-userpassword');
     console.log(dto);
     const user = await this.userService.changeUserPassword(dto);
+    return user;
+  }
+
+  @HttpCode(200)
+  @Get(':id')
+  async getUserById(@Param('id', ParseUUIDPipe) id: string) {
+    const user = await this.userService.findOneById(id);
     return user;
   }
 }

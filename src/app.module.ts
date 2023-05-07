@@ -10,7 +10,6 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { UserSettingsModule } from './user-settings/user-settings.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { AuthModule } from './auth/auth.module';
-import { AllExceptionsFilter } from './common/exceptions/AllExceptionsFilter';
 import { AtGuard } from './auth/common/guards';
 import { CustomExceptionFilter } from './common/exceptions/CustomExceptionFilter';
 
@@ -31,10 +30,6 @@ import { CustomExceptionFilter } from './common/exceptions/CustomExceptionFilter
       provide: APP_FILTER,
       useClass: CustomExceptionFilter,
     },
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: AllExceptionsFilter,
-    // },
     {
       provide: APP_GUARD,
       useClass: AtGuard,
