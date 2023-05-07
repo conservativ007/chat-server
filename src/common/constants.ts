@@ -1,4 +1,23 @@
+import { ConfigService } from '@nestjs/config';
+import { config } from 'dotenv';
+
+config();
+const configService = new ConfigService();
+
 interface IConstants {
-  JWT_SECRET_KEY: string;
-  JWT_SECRET_REFRESH_KEY: string;
+  TYPE: 'postgres';
+  HOST: string;
+  PORT: number;
+  USERNAME: string;
+  PASSWORD: string;
+  DATABASE: string;
 }
+
+export const CONSTANTS: IConstants = {
+  TYPE: configService.get('TYPE'),
+  HOST: configService.get('POSTGRES_HOST'),
+  PORT: configService.get('POSTGRES_PORT'),
+  USERNAME: configService.get('POSTGRES_USER'),
+  PASSWORD: configService.get('POSTGRES_PASSWORD'),
+  DATABASE: configService.get('POSTGRES_DB'),
+};
