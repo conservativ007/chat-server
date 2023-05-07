@@ -26,6 +26,8 @@ export class UsersController {
   @HttpCode(200)
   @Post('/change-userpassword')
   async changeUserPassword(@Body() dto: UpdateUserPasswordDto) {
+    console.log('/change-userpassword');
+    console.log(dto);
     const user = await this.userService.changeUserPassword(dto);
     return user;
   }

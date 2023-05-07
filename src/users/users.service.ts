@@ -150,6 +150,7 @@ export class UsersService {
       );
 
     user.login = newUserLogin;
+    user.version = user.version += 1;
     await this.userRepository.save(user);
     return user;
   }
@@ -157,19 +158,19 @@ export class UsersService {
   async changeUserPassword(dto: UpdateUserPasswordDto): Promise<UserEntity> {
     const { userId, newPassword, oldPassword } = dto;
 
+    console.log('from changeUserPassword');
+    console.log(userId, newPassword, oldPassword);
+
     const user = await this.findOneById(userId);
 
     // compare passwords
     const passwordMatches = await compare(oldPassword, user.password);
     if (!passwordMatches) throw new ForbiddenException('Access Denied');
 
-    console.log(userId);
-    console.log(newPassword);
-    console.log(oldPassword);
-
     const hashedPassword = await this.hashData(newPassword);
 
     user.password = hashedPassword;
+    user.version = user.version += 1;
     await this.userRepository.save(user);
 
     return user;
