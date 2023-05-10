@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,6 +12,8 @@ import { FileUploadModule } from './file-upload/file-upload.module';
 import { AuthModule } from './auth/auth.module';
 import { AtGuard } from './auth/common/guards';
 import { CustomExceptionFilter } from './common/exceptions/CustomExceptionFilter';
+import { LoggerModule } from './common/logger/logger.module';
+import { LoggerMiddleware } from './common/logger/LoggerMiddleware';
 
 @Module({
   imports: [
@@ -22,6 +24,7 @@ import { CustomExceptionFilter } from './common/exceptions/CustomExceptionFilter
     UserSettingsModule,
     FileUploadModule,
     AuthModule,
+    LoggerModule,
   ],
   controllers: [AppController],
   providers: [
@@ -36,4 +39,8 @@ import { CustomExceptionFilter } from './common/exceptions/CustomExceptionFilter
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
