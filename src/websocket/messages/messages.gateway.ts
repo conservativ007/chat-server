@@ -13,6 +13,8 @@ import { CreatePrivateMessageDto } from './dto/create-private-message-dto';
 import { IPrivateMessage } from 'src/common/types/interfaces';
 import { MessageEntity } from './entities/message.entity';
 import { RemoveSenderNameMessageForWho } from '../user-settings/dto/removeSenderNameMessageForWho.dto';
+import { LikeForMessageForRecieverDto } from './dto/like-for-reciever.dto';
+import { LastMessageForUsersDto } from './dto/last.message.for.users.dto';
 
 @WebSocketGateway({
   cors: {
@@ -107,5 +109,25 @@ export class MessagesGateway {
   async getAllUsers(@MessageBody() myselfLogin?: string): Promise<void> {
     const users = await this.usersService.getAll();
     this.server.emit('getAllUsers', users);
+  }
+
+  @SubscribeMessage('likeForReciever')
+  async likeForReciever(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() dto: LikeForMessageForRecieverDto,
+  ): Promise<void> {
+    const reciever = await this.usersService.findOneById(dto.recieverId);
+    console.log('reciever');
+    console.log(reciever);
+
+    // client.to(reciever.socketID).emit('sendUpdatedMessageForReciever', dto);
+    client.to(reciever.socketID).emit('sentLikeForReciever', dto);
+  }
+
+  @SubscribeMessage('lastMessageForUsers')
+  async lastMessageForUsers(
+    @MessageBody() dto: LastMessageForUsersDto,
+  ): Promise<void> {
+    this.server.emit('setLastMessageForUsers', dto);
   }
 }

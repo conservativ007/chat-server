@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePrivateMessageDto } from './dto/create-private-message-dto';
 import { PrivateMessageEntity } from './entities/privateMessage.entity';
+import { LikeForMessageForRecieverDto } from './dto/like-for-reciever.dto';
 
 @Injectable()
 export class MessagesService {
@@ -96,5 +97,9 @@ export class MessagesService {
   async findAllMessages() {
     const messages = await this.chatRepository.find();
     return messages;
+  }
+
+  async likeForReciever(dto: LikeForMessageForRecieverDto) {
+    const { senderName, recieverId, messageId } = dto;
   }
 }

@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class PrivateMessageEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column()
   senderName: string;
@@ -13,6 +13,12 @@ export class PrivateMessageEntity {
 
   @Column()
   message: string;
+
+  @Column({ default: 0 })
+  likeCount: number;
+
+  @Column('simple-array', { default: '' })
+  whoLiked: string[];
 
   @Column()
   createdAt: string;

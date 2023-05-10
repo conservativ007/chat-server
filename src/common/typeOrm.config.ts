@@ -1,7 +1,7 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { UserEntity } from 'src/users/entities/user.entity';
-import { MessageEntity } from 'src/messages/entities/message.entity';
-import { PrivateMessageEntity } from 'src/messages/entities/privateMessage.entity';
+import { MessageEntity } from 'src/websocket/messages/entities/message.entity';
+import { PrivateMessageEntity } from 'src/websocket/messages/entities/privateMessage.entity';
 
 import { CONSTANTS } from './constants';
 

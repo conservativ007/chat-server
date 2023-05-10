@@ -2,18 +2,19 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MessagesModule } from './messages/messages.module';
+import { MessagesModule } from './websocket/messages/messages.module';
 import { newOrmConfig } from './common/typeOrm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-import { UserSettingsModule } from './user-settings/user-settings.module';
+import { UserSettingsModule } from './websocket/user-settings/user-settings.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { AuthModule } from './auth/auth.module';
 import { AtGuard } from './auth/common/guards';
 import { CustomExceptionFilter } from './common/exceptions/CustomExceptionFilter';
 import { LoggerModule } from './common/logger/logger.module';
 import { LoggerMiddleware } from './common/logger/LoggerMiddleware';
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { LoggerMiddleware } from './common/logger/LoggerMiddleware';
     FileUploadModule,
     AuthModule,
     LoggerModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [

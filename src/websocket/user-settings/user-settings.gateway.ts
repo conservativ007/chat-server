@@ -13,7 +13,6 @@ import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { RemoveSenderNameMessageForWho } from './dto/removeSenderNameMessageForWho.dto';
-import { MessagesService } from 'src/messages/messages.service';
 import { AuthService } from 'src/auth/auth.service';
 
 @WebSocketGateway({
