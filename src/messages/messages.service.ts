@@ -15,17 +15,42 @@ export class MessagesService {
     private privateMessageRepository: Repository<PrivateMessageEntity>,
   ) {}
 
-  async createMessage(createMessageDto: CreateMessageDto): Promise<void> {
-    await this.chatRepository.save(createMessageDto);
+  getCurrentTime() {
+    let now = new Date();
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    const time = now.toLocaleString('en-US', {
+      timeZone: timezone,
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: false,
+    });
+    return time;
+  }
+
+  async createMessage(
+    createMessageDto: CreateMessageDto,
+  ): Promise<MessageEntity> {
+    const newMessage = {
+      ...createMessageDto,
+      createdAt: this.getCurrentTime(),
+    };
+
+    const message = this.chatRepository.create(newMessage);
+    await this.chatRepository.save(message);
+    return message;
   }
 
   async createPrivateMessage(
     createPrivateMessageDto: CreatePrivateMessageDto,
   ): Promise<PrivateMessageEntity> {
     const privateMessage = {
-      senderName: createPrivateMessageDto.senderName,
-      receiverName: createPrivateMessageDto.receiverName,
-      message: createPrivateMessageDto.message,
+      ...createPrivateMessageDto,
+      createdAt: this.getCurrentTime(),
     };
 
     const newPrivateMessage = await this.privateMessageRepository.create(

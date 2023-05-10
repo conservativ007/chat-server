@@ -32,8 +32,10 @@ export class MessagesGateway {
   async handleMessage(
     @MessageBody() createMessageDto: CreateMessageDto,
   ): Promise<void> {
-    await this.messagesService.createMessage(createMessageDto);
-    this.server.emit('messageForAllChat', createMessageDto);
+    const newMessageForGeneralChat = await this.messagesService.createMessage(
+      createMessageDto,
+    );
+    this.server.emit('messageForAllChat', newMessageForGeneralChat);
   }
 
   @SubscribeMessage('createPrivateMessage')
