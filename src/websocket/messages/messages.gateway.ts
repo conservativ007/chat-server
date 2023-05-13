@@ -132,8 +132,9 @@ export class MessagesGateway {
     @MessageBody() dto: any,
     @ConnectedSocket() client: Socket,
   ): Promise<void> {
+    const reciever = await this.usersService.findOneById(dto.recieverId);
     client
-      .to(dto.recieverSocketId)
+      .to(reciever.socketID)
       .emit('update-message-for-one-user', dto.message);
   }
 
