@@ -1,4 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class MessageEntity {
@@ -22,4 +27,11 @@ export class MessageEntity {
 
   @Column()
   createdAt: string;
+
+  @Column({ type: 'bigint' })
+  createdDateForSort: number;
+
+  constructor(partial: Partial<MessageEntity>) {
+    Object.assign(this, partial);
+  }
 }

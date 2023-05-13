@@ -39,6 +39,7 @@ export class MessagesService {
     const newMessage = {
       ...createMessageDto,
       createdAt: this.getCurrentTime(),
+      createdDateForSort: Date.now(),
     };
 
     const message = this.chatRepository.create(newMessage);
@@ -52,6 +53,7 @@ export class MessagesService {
     const privateMessage = {
       ...createPrivateMessageDto,
       createdAt: this.getCurrentTime(),
+      createdDateForSort: Date.now(),
     };
 
     const newPrivateMessage = await this.privateMessageRepository.create(

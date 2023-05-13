@@ -4,6 +4,7 @@ import { MessageEntity } from 'src/websocket/messages/entities/message.entity';
 import { Repository } from 'typeorm';
 import { SetLikeForMessageDto } from './dto/set-like.dto';
 import { PrivateMessageEntity } from 'src/websocket/messages/entities/privateMessage.entity';
+import { UpdateMessageDto } from './dto/update-message.dto';
 
 @Injectable()
 export class MessageService {
@@ -15,9 +16,9 @@ export class MessageService {
   ) {}
 
   async setLikeForMessage(dto: SetLikeForMessageDto) {
-    const { messageId, userName, action } = dto;
+    const { messageId, senderName, action } = dto;
 
-    console.log(messageId, userName, action);
+    // console.log(messageId, senderName, action);
 
     let message: MessageEntity | PrivateMessageEntity;
 
@@ -35,12 +36,12 @@ export class MessageService {
     }
 
     let isUserAlreadyLikedThisMessage = message.whoLiked.findIndex(
-      (name) => name === userName,
+      (name) => name === senderName,
     );
 
     if (isUserAlreadyLikedThisMessage === -1) {
       message.likeCount = message.likeCount += 1;
-      message.whoLiked.push(userName);
+      message.whoLiked.push(senderName);
     } else {
       message.likeCount = message.likeCount -= 1;
       message.whoLiked.splice(isUserAlreadyLikedThisMessage, 1);
@@ -51,5 +52,16 @@ export class MessageService {
       : this.chatRepository.save(message);
 
     return message;
+  }
+
+  async updatePrivateMessage(dto: UpdateMessageDto) {
+    const updatedMesage: MessageEntity =
+      await this.privateMessageRepository.save(dto);
+    return updatedMesage;
+  }
+
+  async updateGeneralChatMessage(dto: UpdateMessageDto) {
+    const updatedMesage: MessageEntity = await this.chatRepository.save(dto);
+    return updatedMesage;
   }
 }

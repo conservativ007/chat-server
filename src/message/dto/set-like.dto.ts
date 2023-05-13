@@ -5,7 +5,7 @@ export class SetLikeForMessageDto {
   messageId: string;
 
   @IsString()
-  userName: string;
+  senderName: string;
 
   @IsString()
   action: string;

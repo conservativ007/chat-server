@@ -117,17 +117,28 @@ export class MessagesGateway {
     @MessageBody() dto: LikeForMessageForRecieverDto,
   ): Promise<void> {
     const reciever = await this.usersService.findOneById(dto.recieverId);
-    console.log('reciever');
-    console.log(reciever);
-
-    // client.to(reciever.socketID).emit('sendUpdatedMessageForReciever', dto);
     client.to(reciever.socketID).emit('sentLikeForReciever', dto);
   }
 
-  @SubscribeMessage('lastMessageForUsers')
+  @SubscribeMessage('updateMessageForUsers')
   async lastMessageForUsers(
     @MessageBody() dto: LastMessageForUsersDto,
   ): Promise<void> {
-    this.server.emit('setLastMessageForUsers', dto);
+    this.server.emit('setUpdatedMessageForUsers', dto);
+  }
+
+  @SubscribeMessage('update-message-for-one-user')
+  async updateMessageForOneUser(
+    @MessageBody() dto: any,
+    @ConnectedSocket() client: Socket,
+  ): Promise<void> {
+    client
+      .to(dto.recieverSocketId)
+      .emit('update-message-for-one-user', dto.message);
+  }
+
+  @SubscribeMessage('update-message-for-general-chat')
+  async updateMessageForGeneralChat(@MessageBody() dto: any): Promise<void> {
+    this.server.emit('update-message-for-general-chat', dto.message);
   }
 }
