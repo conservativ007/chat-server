@@ -15,6 +15,7 @@ import { MessageEntity } from './entities/message.entity';
 import { RemoveSenderNameMessageForWho } from '../user-settings/dto/removeSenderNameMessageForWho.dto';
 import { LikeForMessageForRecieverDto } from './dto/like-for-reciever.dto';
 import { LastMessageForUsersDto } from './dto/last.message.for.users.dto';
+import { EMITS } from 'src/common/emits';
 
 @WebSocketGateway({
   cors: {
@@ -141,5 +142,21 @@ export class MessagesGateway {
   @SubscribeMessage('update-message-for-general-chat')
   async updateMessageForGeneralChat(@MessageBody() dto: any): Promise<void> {
     this.server.emit('update-message-for-general-chat', dto.message);
+  }
+
+  @SubscribeMessage(EMITS.DELETE_MESSAGE_FOR_ONE_USER)
+  async deleteMessageForOneUser(
+    @MessageBody() dto: any,
+    @ConnectedSocket() client: Socket,
+  ): Promise<void> {
+    const reciever = await this.usersService.findOneById(dto.recieverId);
+    client
+      .to(reciever.socketID)
+      .emit(EMITS.DELETE_MESSAGE_FOR_ONE_USER, dto.messageId);
+  }
+
+  @SubscribeMessage(EMITS.DELETE_MESSAGE_FOR_GENERAL_CHAT)
+  async deleteMessageForGeneralChat(@MessageBody() dto: any): Promise<void> {
+    this.server.emit(EMITS.DELETE_MESSAGE_FOR_GENERAL_CHAT, dto.messageId);
   }
 }

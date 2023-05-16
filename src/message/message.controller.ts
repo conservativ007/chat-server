@@ -1,4 +1,12 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  HttpCode,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from '@nestjs/common';
 import { MessageService } from './message.service';
 import { SetLikeForMessageDto } from './dto/set-like.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
@@ -31,5 +39,17 @@ export class MessageController {
       dto,
     );
     return updatedMessage;
+  }
+
+  @HttpCode(204)
+  @Delete('/private-message-delete/:id')
+  async messageDeleteForPrivateChat(@Param('id', ParseUUIDPipe) id: string) {
+    await this.messageService.deletePrivateMessage(id);
+  }
+
+  @HttpCode(204)
+  @Delete('/general-chat-message-delete/:id')
+  async messageDeleteForGeneralChat(@Param('id', ParseUUIDPipe) id: string) {
+    await this.messageService.deleteGeneralChatMessage(id);
   }
 }

@@ -64,4 +64,20 @@ export class MessageService {
     const updatedMesage: MessageEntity = await this.chatRepository.save(dto);
     return updatedMesage;
   }
+
+  async deletePrivateMessage(id: string) {
+    const message = await this.privateMessageRepository.findOneBy({ id });
+    if (message === null) {
+      throw new NotFoundException('message not found');
+    }
+    await this.privateMessageRepository.delete(id);
+  }
+
+  async deleteGeneralChatMessage(id: string) {
+    const message = await this.chatRepository.findOneBy({ id });
+    if (message === null) {
+      throw new NotFoundException('message not found');
+    }
+    await this.chatRepository.delete(id);
+  }
 }
