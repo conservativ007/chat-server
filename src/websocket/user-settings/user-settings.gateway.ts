@@ -14,6 +14,7 @@ import { Logger } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { RemoveSenderNameMessageForWho } from './dto/removeSenderNameMessageForWho.dto';
 import { AuthService } from 'src/auth/auth.service';
+import { EMITS } from 'src/common/emits';
 
 @WebSocketGateway({
   cors: {
@@ -62,7 +63,7 @@ export class UserSettingsGateway
     await this.authService.logout(client.id, true);
 
     const users = await this.usersService.getAll();
-    this.server.emit('getAllUsers', users);
+    this.server.emit(EMITS.GET_ALL_USERS, users);
   }
 
   async handleConnection(client: Socket, ...args: any[]): Promise<void> {

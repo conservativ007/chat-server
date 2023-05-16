@@ -33,35 +33,35 @@ export class MessagesService {
     return time;
   }
 
-  async createMessage(
-    createMessageDto: CreateMessageDto,
-  ): Promise<MessageEntity> {
-    const newMessage = {
-      ...createMessageDto,
-      createdAt: this.getCurrentTime(),
-      createdDateForSort: Date.now(),
-    };
+  // async createMessage(
+  //   createMessageDto: CreateMessageDto,
+  // ): Promise<MessageEntity> {
+  //   const newMessage = {
+  //     ...createMessageDto,
+  //     createdAt: this.getCurrentTime(),
+  //     createdDateForSort: Date.now(),
+  //   };
 
-    const message = this.chatRepository.create(newMessage);
-    await this.chatRepository.save(message);
-    return message;
-  }
+  //   const message = this.chatRepository.create(newMessage);
+  //   await this.chatRepository.save(message);
+  //   return message;
+  // }
 
-  async createPrivateMessage(
-    createPrivateMessageDto: CreatePrivateMessageDto,
-  ): Promise<PrivateMessageEntity> {
-    const privateMessage = {
-      ...createPrivateMessageDto,
-      createdAt: this.getCurrentTime(),
-      createdDateForSort: Date.now(),
-    };
+  // async createPrivateMessage(
+  //   createPrivateMessageDto: CreatePrivateMessageDto,
+  // ): Promise<PrivateMessageEntity> {
+  //   const privateMessage = {
+  //     ...createPrivateMessageDto,
+  //     createdAt: this.getCurrentTime(),
+  //     createdDateForSort: Date.now(),
+  //   };
 
-    const newPrivateMessage = await this.privateMessageRepository.create(
-      privateMessage,
-    );
-    await this.privateMessageRepository.save(newPrivateMessage);
-    return newPrivateMessage;
-  }
+  //   const newPrivateMessage = await this.privateMessageRepository.create(
+  //     privateMessage,
+  //   );
+  //   await this.privateMessageRepository.save(newPrivateMessage);
+  //   return newPrivateMessage;
+  // }
 
   async findAllPrivateMessages() {
     const messages = await this.privateMessageRepository.find();
@@ -101,7 +101,7 @@ export class MessagesService {
     return messages;
   }
 
-  async likeForReciever(dto: LikeForMessageForRecieverDto) {
-    const { senderName, recieverId, messageId } = dto;
-  }
+  // async likeForReciever(dto: LikeForMessageForRecieverDto) {
+  //   const { senderName, recieverId, messageId } = dto;
+  // }
 }

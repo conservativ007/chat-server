@@ -6,14 +6,11 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { MessagesService } from './messages.service';
-import { CreateMessageDto } from './dto/create-message.dto';
 import { Server, Socket } from 'socket.io';
 import { UsersService } from 'src/users/users.service';
-import { CreatePrivateMessageDto } from './dto/create-private-message-dto';
 import { IPrivateMessage } from 'src/common/types/interfaces';
 import { MessageEntity } from './entities/message.entity';
 import { RemoveSenderNameMessageForWho } from '../user-settings/dto/removeSenderNameMessageForWho.dto';
-import { LikeForMessageForRecieverDto } from './dto/like-for-reciever.dto';
 import { LastMessageForUsersDto } from './dto/last.message.for.users.dto';
 import { EMITS } from 'src/common/emits';
 
@@ -31,35 +28,23 @@ export class MessagesGateway {
     private usersService: UsersService,
   ) {}
 
-  @SubscribeMessage('createMessageForAllChat')
-  async handleMessage(
-    @MessageBody() createMessageDto: CreateMessageDto,
-  ): Promise<void> {
-    const newMessageForGeneralChat = await this.messagesService.createMessage(
-      createMessageDto,
-    );
-    this.server.emit('messageForAllChat', newMessageForGeneralChat);
+  @SubscribeMessage(EMITS.CREATE_MESSAGE_FOR_GENERAL_CHAT)
+  async handleMessage(@MessageBody() dto: any): Promise<void> {
+    this.server.emit(EMITS.CREATE_MESSAGE_FOR_GENERAL_CHAT, dto);
   }
 
-  @SubscribeMessage('createPrivateMessage')
+  @SubscribeMessage(EMITS.CREATE_PRIVATE_MESSAGE)
   async handlePrivateMessage(
     @ConnectedSocket() client: Socket,
-    @MessageBody() createPrivateMessageDto: CreatePrivateMessageDto,
+    @MessageBody() dto: any,
   ): Promise<void> {
-    const newPrivateMessage = await this.messagesService.createPrivateMessage(
-      createPrivateMessageDto,
-    );
+    const receiverUser = await this.usersService.findOneById(dto.recieverId);
 
-    const receiverUser = await this.usersService.findOneByUserLogin(
-      createPrivateMessageDto.receiverName,
-    );
-
-    client.emit('privateMessageForSender', newPrivateMessage);
     client
       .to(receiverUser.socketID)
-      .emit('privateMessageForResiever', newPrivateMessage);
+      .emit(EMITS.CREATE_PRIVATE_MESSAGE, dto.message);
 
-    if (receiverUser.targetForMessage === createPrivateMessageDto.senderName) {
+    if (receiverUser.targetForMessage === dto.message.senderName) {
       console.log(
         'receiverName.targetForMessage === createPrivateMessageDto.senderName',
       );
@@ -68,13 +53,13 @@ export class MessagesGateway {
 
     // set status unreadMessage to true and emit getAllUsers
     await this.usersService.addUserNameToMessageForWho(
-      createPrivateMessageDto.senderName,
-      createPrivateMessageDto.receiverName,
+      dto.message.senderName,
+      dto.message.receiverName,
     );
     await this.getAllUsers();
   }
 
-  @SubscribeMessage('removeNameForMessageTo')
+  @SubscribeMessage(EMITS.REMOVE_NAME_FOR_MESSAGE_TO)
   async handleRemoveNameForMessageTo(
     @MessageBody() { receiverName, senderName }: RemoveSenderNameMessageForWho,
   ) {
@@ -86,14 +71,14 @@ export class MessagesGateway {
   }
 
   // get all messages
-  @SubscribeMessage('getAllMessages')
+  @SubscribeMessage(EMITS.GET_MESSAGES_FOR_GENERAL_CHAT)
   async getAllMessages(@MessageBody() data: unknown): Promise<MessageEntity[]> {
     // console.log('from getAllMessages: ', data);
     return await this.messagesService.findAllMessages();
   }
 
   // get all private messages for sender and resiever
-  @SubscribeMessage('getAllPrivateMessages')
+  @SubscribeMessage(EMITS.GET_MESSAGES_FOR_PRIVATE_CHAT)
   async handleGetAllPrivateMessages(
     @ConnectedSocket() client: Socket,
     @MessageBody() createPrivateMessageDto: IPrivateMessage,
@@ -103,32 +88,23 @@ export class MessagesGateway {
       senderName,
       receiverName,
     );
-    client.emit('privateMessagesForClients', allPrivateMessages);
+    client.emit(EMITS.GET_MESSAGES_FOR_PRIVATE_CHAT, allPrivateMessages);
   }
 
-  @SubscribeMessage('getAllUsers')
+  @SubscribeMessage(EMITS.GET_ALL_USERS)
   async getAllUsers(@MessageBody() myselfLogin?: string): Promise<void> {
     const users = await this.usersService.getAll();
-    this.server.emit('getAllUsers', users);
+    this.server.emit(EMITS.GET_ALL_USERS, users);
   }
 
-  @SubscribeMessage('likeForReciever')
-  async likeForReciever(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() dto: LikeForMessageForRecieverDto,
-  ): Promise<void> {
-    const reciever = await this.usersService.findOneById(dto.recieverId);
-    client.to(reciever.socketID).emit('sentLikeForReciever', dto);
-  }
-
-  @SubscribeMessage('updateMessageForUsers')
+  @SubscribeMessage(EMITS.SET_LIKE_TO_MESSAGE)
   async lastMessageForUsers(
     @MessageBody() dto: LastMessageForUsersDto,
   ): Promise<void> {
-    this.server.emit('setUpdatedMessageForUsers', dto);
+    this.server.emit(EMITS.SET_LIKE_TO_MESSAGE, dto);
   }
 
-  @SubscribeMessage('update-message-for-one-user')
+  @SubscribeMessage(EMITS.UPDATE_MESSAGE_FOR_ONE_USER)
   async updateMessageForOneUser(
     @MessageBody() dto: any,
     @ConnectedSocket() client: Socket,
@@ -136,12 +112,12 @@ export class MessagesGateway {
     const reciever = await this.usersService.findOneById(dto.recieverId);
     client
       .to(reciever.socketID)
-      .emit('update-message-for-one-user', dto.message);
+      .emit(EMITS.UPDATE_MESSAGE_FOR_ONE_USER, dto.message);
   }
 
-  @SubscribeMessage('update-message-for-general-chat')
+  @SubscribeMessage(EMITS.UPDATE_MESSAGE_FOR_GENERAL_CHAT)
   async updateMessageForGeneralChat(@MessageBody() dto: any): Promise<void> {
-    this.server.emit('update-message-for-general-chat', dto.message);
+    this.server.emit(EMITS.UPDATE_MESSAGE_FOR_GENERAL_CHAT, dto.message);
   }
 
   @SubscribeMessage(EMITS.DELETE_MESSAGE_FOR_ONE_USER)

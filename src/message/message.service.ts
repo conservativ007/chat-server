@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { SetLikeForMessageDto } from './dto/set-like.dto';
 import { PrivateMessageEntity } from 'src/websocket/messages/entities/privateMessage.entity';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { CreateMessageDto } from 'src/websocket/messages/dto/create-message.dto';
+import { CreatePrivateMessageDto } from 'src/websocket/messages/dto/create-private-message-dto';
 
 @Injectable()
 export class MessageService {
@@ -14,6 +16,51 @@ export class MessageService {
     @InjectRepository(PrivateMessageEntity)
     private privateMessageRepository: Repository<PrivateMessageEntity>,
   ) {}
+
+  getCurrentTime() {
+    let now = new Date();
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    const time = now.toLocaleString('en-US', {
+      timeZone: timezone,
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: false,
+    });
+    return time;
+  }
+
+  async createMessageForGeneralChat(dto: CreateMessageDto) {
+    const newMessage = {
+      ...dto,
+      createdAt: this.getCurrentTime(),
+      createdDateForSort: Date.now(),
+    };
+
+    const message = this.chatRepository.create(newMessage);
+    await this.chatRepository.save(message);
+    return message;
+  }
+
+  async createPrivateMessage(
+    createPrivateMessageDto: CreatePrivateMessageDto,
+  ): Promise<PrivateMessageEntity> {
+    const privateMessage = {
+      ...createPrivateMessageDto,
+      createdAt: this.getCurrentTime(),
+      createdDateForSort: Date.now(),
+    };
+
+    const newPrivateMessage = await this.privateMessageRepository.create(
+      privateMessage,
+    );
+    await this.privateMessageRepository.save(newPrivateMessage);
+    return newPrivateMessage;
+  }
 
   async setLikeForMessage(dto: SetLikeForMessageDto) {
     const { messageId, senderName, action } = dto;
