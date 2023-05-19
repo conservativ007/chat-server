@@ -127,4 +127,12 @@ export class MessageService {
     }
     await this.chatRepository.delete(id);
   }
+
+  async findOneMessageInGeneralChat(id: string) {
+    const message = await this.chatRepository.findOneBy({ id });
+    if (message === null) {
+      throw new NotFoundException('message not found');
+    }
+    return message;
+  }
 }

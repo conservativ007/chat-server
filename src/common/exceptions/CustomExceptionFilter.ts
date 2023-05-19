@@ -22,8 +22,8 @@ export class CustomExceptionFilter implements ExceptionFilter {
       message = 'Internal server error';
     }
 
-    console.log('from CustomExceptionFilter');
-    console.log(statusCode, message);
+    // console.log('from CustomExceptionFilter');
+    // console.log(statusCode, message);
 
     ctx.getResponse().status(statusCode).json({
       statusCode,

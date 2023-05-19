@@ -10,7 +10,7 @@ import { UpdateUserPasswordDto } from 'src/users/dto/update-user-password.dto';
 import { compare } from 'bcrypt';
 import { UpdateUserLoginDto } from 'src/users/dto/update-user-login.dto';
 
-describe('AppController (e2e)', () => {
+describe('UsersController (e2e)', () => {
   let app: INestApplication;
   let user: UserEntity;
   let tokens: Tokens;

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   Param,
   ParseUUIDPipe,
@@ -11,10 +12,18 @@ import { MessageService } from './message.service';
 import { SetLikeForMessageDto } from './dto/set-like.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { CreateMessageDto } from 'src/websocket/messages/dto/create-message.dto';
+import { MessageEntity } from 'src/websocket/messages/entities/message.entity';
 
 @Controller('message')
 export class MessageController {
   constructor(private messageService: MessageService) {}
+
+  @HttpCode(200)
+  @Get('/find-one-message-general-chat/:id')
+  async findOne(@Param('id') id: string): Promise<MessageEntity> {
+    const message = await this.messageService.findOneMessageInGeneralChat(id);
+    return message;
+  }
 
   @HttpCode(201)
   @Post('/create-message-for-general-chat')

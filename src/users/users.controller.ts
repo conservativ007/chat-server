@@ -8,7 +8,6 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserLoginDto } from './dto/update-user-login.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 
@@ -34,8 +33,6 @@ export class UsersController {
   @HttpCode(200)
   @Post('/change-userpassword')
   async changeUserPassword(@Body() dto: UpdateUserPasswordDto) {
-    console.log('/change-userpassword');
-    console.log(dto);
     const user = await this.userService.changeUserPassword(dto);
     return user;
   }
