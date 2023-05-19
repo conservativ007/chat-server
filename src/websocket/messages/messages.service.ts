@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMessageDto } from './dto/create-message.dto';
 import { MessageEntity } from './entities/message.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreatePrivateMessageDto } from './dto/create-private-message-dto';
 import { PrivateMessageEntity } from './entities/privateMessage.entity';
-import { LikeForMessageForRecieverDto } from './dto/like-for-reciever.dto';
 
 @Injectable()
 export class MessagesService {
@@ -32,36 +29,6 @@ export class MessagesService {
     });
     return time;
   }
-
-  // async createMessage(
-  //   createMessageDto: CreateMessageDto,
-  // ): Promise<MessageEntity> {
-  //   const newMessage = {
-  //     ...createMessageDto,
-  //     createdAt: this.getCurrentTime(),
-  //     createdDateForSort: Date.now(),
-  //   };
-
-  //   const message = this.chatRepository.create(newMessage);
-  //   await this.chatRepository.save(message);
-  //   return message;
-  // }
-
-  // async createPrivateMessage(
-  //   createPrivateMessageDto: CreatePrivateMessageDto,
-  // ): Promise<PrivateMessageEntity> {
-  //   const privateMessage = {
-  //     ...createPrivateMessageDto,
-  //     createdAt: this.getCurrentTime(),
-  //     createdDateForSort: Date.now(),
-  //   };
-
-  //   const newPrivateMessage = await this.privateMessageRepository.create(
-  //     privateMessage,
-  //   );
-  //   await this.privateMessageRepository.save(newPrivateMessage);
-  //   return newPrivateMessage;
-  // }
 
   async findAllPrivateMessages() {
     const messages = await this.privateMessageRepository.find();
@@ -100,8 +67,4 @@ export class MessagesService {
     const messages = await this.chatRepository.find();
     return messages;
   }
-
-  // async likeForReciever(dto: LikeForMessageForRecieverDto) {
-  //   const { senderName, recieverId, messageId } = dto;
-  // }
 }

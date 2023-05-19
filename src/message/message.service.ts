@@ -6,7 +6,7 @@ import { SetLikeForMessageDto } from './dto/set-like.dto';
 import { PrivateMessageEntity } from 'src/websocket/messages/entities/privateMessage.entity';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { CreateMessageDto } from 'src/websocket/messages/dto/create-message.dto';
-import { CreatePrivateMessageDto } from 'src/websocket/messages/dto/create-private-message-dto';
+import { CreatePrivateMessageDto } from 'src/websocket/messages/dto/create-private-message.dto';
 
 @Injectable()
 export class MessageService {
