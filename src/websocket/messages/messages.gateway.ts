@@ -7,12 +7,12 @@ import {
 } from '@nestjs/websockets';
 import { MessagesService } from './messages.service';
 import { Server, Socket } from 'socket.io';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../../users/users.service';
 import { IPrivateMessage } from 'src/common/types/interfaces';
 import { MessageEntity } from './entities/message.entity';
 import { RemoveSenderNameMessageForWho } from '../user-settings/dto/remove-sender-name-message-for-who.dto';
 import { LastMessageForUsersDto } from './dto/last.message.for.users.dto';
-import { EMITS } from 'src/common/emits';
+import { EMITS } from '../../common/emits';
 import { DeletePrivateMessageDto } from './dto/delete-message.dto';
 
 @WebSocketGateway({

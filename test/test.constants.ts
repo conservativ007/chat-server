@@ -68,8 +68,8 @@ export interface IPreMessage {
 
 export const defaultPreMessage: IPreMessage = {
   message: 'test message',
-  senderName: 'xxx',
-  receiverName: 'mister',
+  senderName: testUserTwo.login,
+  receiverName: 'all',
 };
 
 export interface ILike {

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { UserSettingsService } from './user-settings.service';
 import { UserSettingsGateway } from './user-settings.gateway';
-import { UserEntity } from 'src/users/entities/user.entity';
+import { UserEntity } from '../../users/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from 'src/users/users.module';
-import { MessagesModule } from 'src/websocket/messages/messages.module';
-import { AuthModule } from 'src/auth/auth.module';
+import { UsersModule } from '../../users/users.module';
+import { MessagesModule } from '../../websocket/messages/messages.module';
+import { AuthModule } from '../../auth/auth.module';
 
 @Module({
   providers: [UserSettingsGateway, UserSettingsService],

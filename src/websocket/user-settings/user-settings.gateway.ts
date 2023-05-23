@@ -11,10 +11,10 @@ import { SetUserAvatarDTO } from './dto/set-user-avatar-settings.dto';
 
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../../users/users.service';
 import { RemoveSenderNameMessageForWho } from './dto/remove-sender-name-message-for-who.dto';
-import { AuthService } from 'src/auth/auth.service';
-import { EMITS } from 'src/common/emits';
+import { AuthService } from '../../auth/auth.service';
+import { EMITS } from '../../common/emits';
 
 @WebSocketGateway({
   cors: {

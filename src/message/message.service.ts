@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MessageEntity } from 'src/websocket/messages/entities/message.entity';
+import { MessageEntity } from '../websocket/messages/entities/message.entity';
 import { Repository } from 'typeorm';
 import { SetLikeForMessageDto } from './dto/set-like.dto';
-import { PrivateMessageEntity } from 'src/websocket/messages/entities/privateMessage.entity';
+import { PrivateMessageEntity } from '../websocket/messages/entities/privateMessage.entity';
 import { UpdateMessageDto } from './dto/update-message.dto';
-import { CreateMessageDto } from 'src/websocket/messages/dto/create-message.dto';
-import { CreatePrivateMessageDto } from 'src/websocket/messages/dto/create-private-message.dto';
+import { CreateMessageDto } from '../websocket/messages/dto/create-message.dto';
+import { CreatePrivateMessageDto } from '../websocket/messages/dto/create-private-message.dto';
 
 @Injectable()
 export class MessageService {
@@ -95,8 +95,8 @@ export class MessageService {
     }
 
     action === 'private'
-      ? this.privateMessageRepository.save(message)
-      : this.chatRepository.save(message);
+      ? await this.privateMessageRepository.save(message)
+      : await this.chatRepository.save(message);
 
     return message;
   }

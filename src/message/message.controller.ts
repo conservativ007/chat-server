@@ -11,8 +11,8 @@ import {
 import { MessageService } from './message.service';
 import { SetLikeForMessageDto } from './dto/set-like.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
-import { CreateMessageDto } from 'src/websocket/messages/dto/create-message.dto';
-import { MessageEntity } from 'src/websocket/messages/entities/message.entity';
+import { CreateMessageDto } from '../websocket/messages/dto/create-message.dto';
+import { MessageEntity } from '../websocket/messages/entities/message.entity';
 
 @Controller('message')
 export class MessageController {

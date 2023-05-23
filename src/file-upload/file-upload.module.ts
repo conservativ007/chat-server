@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { FileUploadController } from './file-upload.controller';
 import { FileUploadService } from './file-upload.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from 'src/users/entities/user.entity';
+import { UserEntity } from '../users/entities/user.entity';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
