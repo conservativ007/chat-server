@@ -1,20 +1,21 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { UserEntity } from 'src/users/entities/user.entity';
-import { MessageEntity } from 'src/websocket/messages/entities/message.entity';
-import { PrivateMessageEntity } from 'src/websocket/messages/entities/privateMessage.entity';
+import { UserEntity } from '../users/entities/user.entity';
+import { MessageEntity } from '../websocket/messages/entities/message.entity';
+import { PrivateMessageEntity } from '../websocket/messages/entities/privateMessage.entity';
 
 import { CONSTANTS } from './constants';
+import { NewMigration } from '../../migrations/NewMigration';
 
 // needs to forRoot typeOrm module
 export const newOrmConfig: DataSourceOptions = {
   type: CONSTANTS.TYPE,
   host: CONSTANTS.HOST,
-  port: CONSTANTS.PORT,
+  port: CONSTANTS.POSTGRES_PORT,
   username: CONSTANTS.USERNAME,
   password: CONSTANTS.PASSWORD,
   database: CONSTANTS.DATABASE,
   entities: [MessageEntity, UserEntity, PrivateMessageEntity],
-  synchronize: true,
+  migrations: [NewMigration],
 };
 
 // needs to migration actions
