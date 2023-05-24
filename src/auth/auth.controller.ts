@@ -9,10 +9,6 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { AuthDto } from './dto';
-import { WebSocketServer } from '@nestjs/websockets';
-
-import { Server } from 'socket.io';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { AttachSocketDto } from './dto/attach-socket.dto';
@@ -22,9 +18,6 @@ import { Public } from './common/decorators';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
-
-  @WebSocketServer()
-  server: Server;
 
   @HttpCode(201)
   @Public()
@@ -36,7 +29,7 @@ export class AuthController {
   @HttpCode(200)
   @Public()
   @Post('/login')
-  async login(@Body() dto: AuthDto) {
+  async login(@Body() dto: CreateUserDto) {
     return await this.authService.login(dto);
   }
 

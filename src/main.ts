@@ -17,5 +17,6 @@ async function bootstrap() {
 
   await app.listen(CONSTANTS.PORT);
   console.log(`The server is listening on port ${CONSTANTS.PORT}`);
+  // console.log(42);
 }
 bootstrap();
