@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  server:
+    image: conservativ/chat-app-server
+    ports:
+      - '4000:4000'
+    depends_on:
+      - postgres
+    volumes:
+      - .:/usr/app/
+
+  postgres:
+    image: conservativ/chat-app-postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - nodejs-chat:/data/db
+      - DATA:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+
+volumes:
+  nodejs-chat:
+  DATA:
