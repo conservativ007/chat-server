@@ -1,5 +1,3 @@
-import { UserEntity } from 'src/users/entities/user.entity';
-
 interface IConstants {
   SIGNUP: string;
   LOGIN: string;
@@ -32,54 +30,14 @@ export const CONSTANTS: IConstants = {
   FIND_ONE_MESSAGE_IN_GENERAL_CHAT: '/message/find-one-message-general-chat',
 };
 
-export const testUser: Omit<UserEntity, 'id'> = {
-  login: 'test-user',
-  password: '123',
-  version: 1,
-  online: true,
-  socketID: null,
-  hashedRt: null,
-  targetForMessage: null,
-  avatar: 'https://i.ibb.co/pzMk1pf/2253542a88b4.png',
-  messageForWho: [],
-  createdAt: Number(Date.now()),
-  updatedAt: Number(Date.now()),
-};
-
-export const testUserTwo: Omit<UserEntity, 'id'> = {
-  login: 'test-user-two',
-  password: '7788',
-  version: 1,
-  online: true,
-  socketID: null,
-  hashedRt: null,
-  targetForMessage: null,
-  avatar: 'https://i.ibb.co/pzMk1pf/2253542a88b4.png',
-  messageForWho: [],
-  createdAt: Number(Date.now()),
-  updatedAt: Number(Date.now()),
-};
-
 export interface IPreMessage {
   message: string;
   senderName: string;
   receiverName: string;
 }
 
-export const defaultPreMessage: IPreMessage = {
-  message: 'test message',
-  senderName: testUserTwo.login,
-  receiverName: 'all',
-};
-
 export interface ILike {
   messageId: string;
   senderName: string;
   action: 'public' | 'private';
 }
-
-export const defaultLikeMessage: ILike = {
-  messageId: '',
-  senderName: '',
-  action: 'public',
-};
