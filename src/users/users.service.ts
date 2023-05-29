@@ -10,13 +10,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { MessageEntity } from 'src/websocket/messages/entities/message.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-  ) {}
+  ) // @InjectRepository(MessageEntity)
+  // private messageRepository: Repository<MessageEntity>,
+  {}
 
   async hashData(data: string) {
     return hash(data, 10);
@@ -147,6 +150,7 @@ export class UsersService {
     user.login = newUserLogin;
     user.version = user.version += 1;
     await this.userRepository.save(user);
+
     return user;
   }
 

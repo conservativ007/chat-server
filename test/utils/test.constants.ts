@@ -34,6 +34,8 @@ export interface IPreMessage {
   message: string;
   senderName: string;
   receiverName: string;
+  senderId: string;
+  receiverId: string;
 }
 
 export interface ILike {

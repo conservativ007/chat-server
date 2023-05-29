@@ -32,6 +32,8 @@ describe('Message e2e', () => {
       message: 'hello everybody!',
       senderName: user.login,
       receiverName: 'all',
+      senderId: user.id,
+      receiverId: 'all',
     };
 
     const response = await unauthorizedRequest

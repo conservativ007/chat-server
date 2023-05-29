@@ -17,6 +17,12 @@ export class MessageEntity {
   receiverName: string;
 
   @Column()
+  senderId: string;
+
+  @Column()
+  receiverId: string;
+
+  @Column()
   message: string;
 
   @Column({ default: 0 })

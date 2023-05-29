@@ -47,10 +47,10 @@ export class MessageService {
   }
 
   async createPrivateMessage(
-    createPrivateMessageDto: CreatePrivateMessageDto,
+    dto: CreateMessageDto,
   ): Promise<PrivateMessageEntity> {
     const privateMessage = {
-      ...createPrivateMessageDto,
+      ...dto,
       createdAt: this.getCurrentTime(),
       createdDateForSort: Date.now(),
     };
@@ -58,6 +58,7 @@ export class MessageService {
     const newPrivateMessage = await this.privateMessageRepository.create(
       privateMessage,
     );
+
     await this.privateMessageRepository.save(newPrivateMessage);
     return newPrivateMessage;
   }
@@ -102,13 +103,12 @@ export class MessageService {
   }
 
   async updatePrivateMessage(dto: UpdateMessageDto) {
-    const updatedMesage: MessageEntity =
-      await this.privateMessageRepository.save(dto);
+    const updatedMesage = await this.privateMessageRepository.save(dto);
     return updatedMesage;
   }
 
   async updateGeneralChatMessage(dto: UpdateMessageDto) {
-    const updatedMesage: MessageEntity = await this.chatRepository.save(dto);
+    const updatedMesage = await this.chatRepository.save(dto);
     return updatedMesage;
   }
 

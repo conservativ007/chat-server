@@ -20,6 +20,12 @@ export class PrivateMessageEntity {
   @Column()
   message: string;
 
+  @Column()
+  senderId: string;
+
+  @Column()
+  receiverId: string;
+
   @Column({ default: 0 })
   likeCount: number;
 

@@ -45,16 +45,13 @@ export class MessageController {
   @Post('/message-like')
   async setLikeForMessage(@Body() dto: SetLikeForMessageDto) {
     const message = await this.messageService.setLikeForMessage(dto);
-    // console.log(message);
     return message;
   }
 
   @HttpCode(201)
   @Post('/private-message-edit')
   async messageEditForPrivateChat(@Body() dto: UpdateMessageDto) {
-    // console.log(dto);
     const updatedMessage = await this.messageService.updatePrivateMessage(dto);
-
     return updatedMessage;
   }
 

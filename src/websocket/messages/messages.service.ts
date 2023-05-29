@@ -49,13 +49,13 @@ export class MessagesService {
     return false;
   }
 
-  async findPrivateMessagesBy(senderName: string, receiverName: string) {
+  async findPrivateMessagesBy(senderId: string, receiverId: string) {
     const messages = await this.privateMessageRepository.find();
     const correctedMessages = messages.filter((message) => {
       const values = Object.values(message);
 
-      const sender = values.includes(senderName);
-      const reciever = values.includes(receiverName);
+      const sender = values.includes(senderId);
+      const reciever = values.includes(receiverId);
 
       if (sender === true && reciever === true) return message;
     });

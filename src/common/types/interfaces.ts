@@ -1,6 +1,6 @@
 export interface IPrivateMessage {
-  receiverName: string;
-  senderName: string;
+  receiverId: string;
+  senderId: string;
 }
 
 export interface ILastMessageFromUsers {

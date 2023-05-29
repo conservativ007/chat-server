@@ -14,6 +14,12 @@ export class UpdateMessageDto {
   receiverName: string;
 
   @IsString()
+  senderId: string;
+
+  @IsString()
+  receiverId: string;
+
+  @IsString()
   message: string;
 
   @IsNumber()

@@ -39,7 +39,7 @@ export class MessagesGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() dto: MessageEntity,
   ): Promise<void> {
-    console.log(dto);
+    // console.log(dto);
     const receiverUser = await this.usersService.findOneByUserLogin(
       dto.receiverName,
     );
@@ -83,10 +83,10 @@ export class MessagesGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() createPrivateMessageDto: IPrivateMessage,
   ): Promise<void> {
-    const { receiverName, senderName } = createPrivateMessageDto;
+    const { senderId, receiverId } = createPrivateMessageDto;
     const allPrivateMessages = await this.messagesService.findPrivateMessagesBy(
-      senderName,
-      receiverName,
+      senderId,
+      receiverId,
     );
     client.emit(EMITS.GET_MESSAGES_FOR_PRIVATE_CHAT, allPrivateMessages);
   }
