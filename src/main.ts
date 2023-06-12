@@ -5,7 +5,11 @@ import { CONSTANTS } from './common/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Authorization',
+  });
 
   // in this place we validate incoming body
   app.useGlobalPipes(
@@ -17,6 +21,5 @@ async function bootstrap() {
 
   await app.listen(CONSTANTS.PORT);
   console.log(`The server is listening on port ${CONSTANTS.PORT}`);
-  // console.log(42);
 }
 bootstrap();
