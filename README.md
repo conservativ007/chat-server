@@ -16,7 +16,7 @@ The frontend side you can find [here](https://github.com/conservativ007/chat-cli
 ⚠️ The project uses docker images, you must have a docker application in your local machine
 
 ```
-git clone git@github.com:conservativ007/nodejs2022Q4-service.git
+git clone git@github.com:conservativ007/chat-server.git
 ```
 
 ```
