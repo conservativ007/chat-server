@@ -34,18 +34,9 @@ export class FileUploadController {
     await this.fileUploadService.checkUser(id);
 
     let response = await this.fileUploadService.fileUpload(file);
-    response = JSON.stringify(response);
+    // response = JSON.stringify(response);
     return response;
   }
-
-  // FileInterceptor('image', {
-  //   storage: diskStorage({
-  //     destination: 'src/file-upload/uploaded-files',
-  //     filename: (req, file, cb) => {
-  //       cb(null, `${file.originalname}`);
-  //     },
-  //   }),
-  // }),
 
   @Post('image')
   @UseInterceptors(FileInterceptor('image'))
@@ -61,16 +52,37 @@ export class FileUploadController {
     file: Express.Multer.File,
   ) {
     let response = await this.fileUploadService.fileUpload(file);
-    // console.log('handleUploadFileImage');
-    // console.log(response);
-    response = JSON.stringify(response);
     return response;
-    // const dto = {
-    //   filename: file.filename,
-    //   path: file.path,
-    //   mimetype: file.mimetype,
-    // };
+  }
 
-    // return await this.fileUploadService.saveLocalFileData(dto);
+  @Post('file')
+  @UseInterceptors(
+    FileInterceptor('any-file', {
+      storage: diskStorage({
+        destination: 'src/file-upload/uploaded-files',
+        filename: (req, file, cb) => {
+          cb(null, `${file.originalname}`);
+        },
+      }),
+    }),
+  )
+  async handleUploadAnyFile(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
+          // new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    const dto = {
+      filename: file.filename,
+      path: file.path,
+      mimetype: file.mimetype,
+    };
+
+    return await this.fileUploadService.saveLocalFileData(dto);
   }
 }

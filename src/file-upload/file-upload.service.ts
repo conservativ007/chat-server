@@ -38,15 +38,20 @@ export class FileUploadService {
           }),
         ),
     );
-    return data.data.url;
+
+    return {
+      type: 'image',
+      imageUrl: data.data.url,
+    };
   }
 
   async saveLocalFileData(fileData: localFileDto) {
-    //
     const newFile = this.localFilesRepository.create(fileData);
-    console.log(newFile);
     await this.localFilesRepository.save(newFile);
 
-    return newFile;
+    return {
+      type: 'file',
+      fileId: newFile.id,
+    };
   }
 }
