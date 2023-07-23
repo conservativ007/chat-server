@@ -15,4 +15,7 @@ export class CreatePrivateMessageDto {
 
   @IsString()
   message: string;
+
+  @IsString()
+  imageSrc: string;
 }

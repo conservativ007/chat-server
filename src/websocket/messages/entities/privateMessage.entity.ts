@@ -1,4 +1,3 @@
-import { type } from 'os';
 import {
   Entity,
   Column,
@@ -25,6 +24,9 @@ export class PrivateMessageEntity {
 
   @Column()
   receiverId: string;
+
+  @Column()
+  imageSrc: string;
 
   @Column({ default: 0 })
   likeCount: number;

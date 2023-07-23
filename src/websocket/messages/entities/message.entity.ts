@@ -23,6 +23,9 @@ export class MessageEntity {
   receiverId: string;
 
   @Column()
+  imageSrc: string;
+
+  @Column()
   message: string;
 
   @Column({ default: 0 })

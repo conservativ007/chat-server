@@ -15,4 +15,7 @@ export class CreateMessageDto {
 
   @IsString()
   message: string;
+
+  @IsString()
+  imageSrc: string;
 }

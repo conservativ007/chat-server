@@ -14,6 +14,22 @@ export class LoggerMiddleware implements NestMiddleware {
     const serializedParams = Object.values(params);
     const serializedBody = JSON.stringify(body);
 
+    // console.log(request);
+
+    // Слушаем событие 'error' на объекте запроса (request)
+    request.on('error', (error) => {
+      // Обрабатываем ошибку
+      this.logger.error(`Request error: ${error.message}`);
+      this.loggerService.writeLog(`Request error: ${error.message}`, true);
+    });
+
+    // Слушаем событие 'error' на объекте ответа (response)
+    response.on('error', (error) => {
+      // Обрабатываем ошибку
+      this.logger.error(`Response error: ${error.message}`);
+      this.loggerService.writeLog(`Response error: ${error.message}`, true);
+    });
+
     response.on('finish', () => {
       const { statusCode } = response;
 

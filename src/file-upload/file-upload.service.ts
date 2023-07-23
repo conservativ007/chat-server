@@ -5,6 +5,7 @@ import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { UserEntity } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
+import { LocalFile } from './entities/local-file.entity';
 
 @Injectable()
 export class FileUploadService {
@@ -12,14 +13,18 @@ export class FileUploadService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private readonly httpService: HttpService,
+    @InjectRepository(LocalFile)
+    private localFilesRepository: Repository<LocalFile>,
   ) {}
 
-  async fileUpload(file: Express.Multer.File, userId: string) {
+  async checkUser(userId: string) {
     const user = await this.userRepository.findOneBy({ id: userId });
     if (user === null) {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     }
+  }
 
+  async fileUpload(file: Express.Multer.File) {
     const API_KEY = '3b611871870b0f2b7976d09503b67257';
 
     const formData = new FormData();
@@ -34,5 +39,14 @@ export class FileUploadService {
         ),
     );
     return data.data.url;
+  }
+
+  async saveLocalFileData(fileData: localFileDto) {
+    //
+    const newFile = this.localFilesRepository.create(fileData);
+    console.log(newFile);
+    await this.localFilesRepository.save(newFile);
+
+    return newFile;
   }
 }

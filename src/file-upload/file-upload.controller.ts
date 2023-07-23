@@ -11,12 +11,13 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadService } from './file-upload.service';
+import { diskStorage } from 'multer';
 
 @Controller('file-upload')
 export class FileUploadController {
   constructor(private fileUploadService: FileUploadService) {}
 
-  @Post(':id')
+  @Post('avatar/:id')
   @UseInterceptors(FileInterceptor('file'))
   async handleUploadFile(
     @UploadedFile(
@@ -30,8 +31,46 @@ export class FileUploadController {
     file: Express.Multer.File,
     @Param() { id },
   ) {
-    let response = await this.fileUploadService.fileUpload(file, id);
+    await this.fileUploadService.checkUser(id);
+
+    let response = await this.fileUploadService.fileUpload(file);
     response = JSON.stringify(response);
     return response;
+  }
+
+  // FileInterceptor('image', {
+  //   storage: diskStorage({
+  //     destination: 'src/file-upload/uploaded-files',
+  //     filename: (req, file, cb) => {
+  //       cb(null, `${file.originalname}`);
+  //     },
+  //   }),
+  // }),
+
+  @Post('image')
+  @UseInterceptors(FileInterceptor('image'))
+  async handleUploadFileImage(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    let response = await this.fileUploadService.fileUpload(file);
+    // console.log('handleUploadFileImage');
+    // console.log(response);
+    response = JSON.stringify(response);
+    return response;
+    // const dto = {
+    //   filename: file.filename,
+    //   path: file.path,
+    //   mimetype: file.mimetype,
+    // };
+
+    // return await this.fileUploadService.saveLocalFileData(dto);
   }
 }
