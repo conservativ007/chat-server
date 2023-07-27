@@ -2,16 +2,23 @@ import {
   Body,
   Controller,
   FileTypeValidator,
+  Get,
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
+  ParseIntPipe,
   Post,
+  Res,
+  StreamableFile,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadService } from './file-upload.service';
 import { diskStorage } from 'multer';
+import { createReadStream } from 'node:fs';
+import { join } from 'node:path';
 
 @Controller('file-upload')
 export class FileUploadController {
@@ -84,5 +91,22 @@ export class FileUploadController {
     };
 
     return await this.fileUploadService.saveLocalFileData(dto);
+  }
+
+  @Get('file/:id')
+  async getDataFileById(
+    @Param('id', ParseIntPipe) id: number,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<StreamableFile> {
+    const file = await this.fileUploadService.getFileById(id);
+
+    const stream = createReadStream(join(process.cwd(), file.path));
+
+    response.set({
+      'Content-Disposition': `attachment; filename="${file.filename}"`,
+      'Content-Type': file.mimetype,
+    });
+
+    return new StreamableFile(stream);
   }
 }

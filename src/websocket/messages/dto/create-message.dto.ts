@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class CreateMessageDto {
   @IsString()
@@ -18,4 +18,13 @@ export class CreateMessageDto {
 
   @IsString()
   imageSrc: string;
+
+  @IsNumber()
+  fileId: number;
+
+  @IsString()
+  fileName: string;
+
+  @IsNumber()
+  fileSize: number;
 }

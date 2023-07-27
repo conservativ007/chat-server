@@ -1,5 +1,10 @@
 import { HttpService } from '@nestjs/axios';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
@@ -52,6 +57,16 @@ export class FileUploadService {
     return {
       type: 'file',
       fileId: newFile.id,
+      fileName: fileData.filename,
     };
+  }
+
+  async getFileById(id: number) {
+    const file = this.localFilesRepository.findOne({ where: { id } });
+    if (!file) {
+      throw new NotFoundException();
+    }
+
+    return file;
   }
 }

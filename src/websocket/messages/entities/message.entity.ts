@@ -26,6 +26,15 @@ export class MessageEntity {
   imageSrc: string;
 
   @Column()
+  fileId: number;
+
+  @Column()
+  fileName: string;
+
+  @Column()
+  fileSize: number;
+
+  @Column()
   message: string;
 
   @Column({ default: 0 })

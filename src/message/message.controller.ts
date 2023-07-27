@@ -37,6 +37,8 @@ export class MessageController {
   @HttpCode(201)
   @Post('/create-private-message')
   async createPrivateMessage(@Body() dto: CreateMessageDto) {
+    // console.log('/create-private-message');
+    // console.log(dto);
     const newMessage = await this.messageService.createPrivateMessage(dto);
     return newMessage;
   }

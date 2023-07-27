@@ -28,6 +28,15 @@ export class PrivateMessageEntity {
   @Column()
   imageSrc: string;
 
+  @Column()
+  fileId: number;
+
+  @Column()
+  fileName: string;
+
+  @Column()
+  fileSize: number;
+
   @Column({ default: 0 })
   likeCount: number;
 
