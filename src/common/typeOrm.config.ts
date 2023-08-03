@@ -5,7 +5,7 @@ import { PrivateMessageEntity } from '../websocket/messages/entities/privateMess
 
 import { CONSTANTS } from './constants';
 import { NewMigration } from '../../migrations/NewMigration';
-import { LocalFile } from 'src/file-upload/entities/local-file.entity';
+import { LocalFile } from '../file-upload/entities/local-file.entity';
 
 // needs to forRoot typeOrm module
 export const newOrmConfig: DataSourceOptions = {
@@ -16,8 +16,8 @@ export const newOrmConfig: DataSourceOptions = {
   password: CONSTANTS.PASSWORD,
   database: CONSTANTS.DATABASE,
   entities: [MessageEntity, UserEntity, PrivateMessageEntity, LocalFile],
-  synchronize: true,
-  // migrations: [NewMigration],
+  // synchronize: true,
+  migrations: [NewMigration],
 };
 
 // needs to migration actions

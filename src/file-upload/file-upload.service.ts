@@ -11,6 +11,7 @@ import { catchError, firstValueFrom } from 'rxjs';
 import { UserEntity } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { LocalFile } from './entities/local-file.entity';
+import { localFileDto } from './dto/local-file.dto';
 
 @Injectable()
 export class FileUploadService {
@@ -34,6 +35,9 @@ export class FileUploadService {
 
     const formData = new FormData();
     formData.append('image', file.buffer.toString('base64'));
+
+    // console.log(formData);
+
     const { data } = await firstValueFrom(
       this.httpService
         .post(`https://api.imgbb.com/1/upload?key=${API_KEY}`, formData)
