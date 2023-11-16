@@ -16,8 +16,8 @@ export const newOrmConfig: DataSourceOptions = {
   password: CONSTANTS.PASSWORD,
   database: CONSTANTS.DATABASE,
   entities: [MessageEntity, UserEntity, PrivateMessageEntity, LocalFile],
-  // synchronize: true,
-  migrations: [NewMigration],
+  synchronize: true,
+  // migrations: [NewMigration],
 };
 
 // needs to migration actions

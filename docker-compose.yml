@@ -1,14 +1,14 @@
 version: '3'
 
 services:
-  server:
-    image: conservativ/chat-app-server
-    ports:
-      - '4000:4000'
-    depends_on:
-      - postgres
-    volumes:
-      - .:/usr/app/
+  # server:
+  #   image: conservativ/chat-app-server
+  #   ports:
+  #     - '4000:4000'
+  #   depends_on:
+  #     - postgres
+  #   volumes:
+  #     - .:/usr/app/
 
   # frontend:
   #   image: conservativ/chat-app-frontend
