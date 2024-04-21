@@ -1,6 +1,6 @@
 # Project: Chat Service
 
-## [ChatService](http://85.209.148.189:3000/)
+## [ChatService](http://chat-app.by/)
 
 ## Description
 
@@ -60,4 +60,4 @@ npm run test:e2e
 
 #### Technology stack
 
-NestJS, TypeScript, Socket.io, postgres + typeorm
+NestJS, TypeScript, Socket.io, Postgres + TypeOrm
